@@ -71,12 +71,19 @@ QGeoPath BupLogParser::getTrack(QString latitudeTag,
         double altitude = data.at(altitudeIndex)->at(i).toDouble();
         track.append(QGeoCoordinate(latitude, longitude, altitude));
     }
-    for(int i = 0; i < track.count(); i++){
-    qDebug() << track.at(i);
-    }
+    for(int i = 0; i < track.count(); i++)
+        qDebug() << track.at(i);
     return QGeoPath(track);
-    QGeoPath path;
-//    path.addCoordinate(QGeoCoordinate(59.585949, 29.615652));
-//    path.addCoordinate(QGeoCoordinate(59.652309, 30.018348));
-//    return path;
+}
+
+void BupLogParser::qwertyupdate(QtCharts::QAbstractSeries *series){
+
+    QtCharts::QXYSeries *xySeries = static_cast<QtCharts::QXYSeries *>(series);
+
+    xySeries->clear();
+
+    // Use replace instead of clear + append, it's optimized for performance
+    QList<QPointF> aaa;
+    aaa << QPointF(0,0) << QPointF(1,5) << QPointF (2, 7);
+    xySeries->append(aaa);
 }

@@ -47,7 +47,6 @@ Item {
 //            circle.border.width = 3
 //            map.addMapItem(circle)
             createTrack(parser.getTrack("Model_Lat, deg: ", "Model_Lon, deg: ",  "Model_Alt, m: "));
-
         }
         MapPolyline {
             id: track

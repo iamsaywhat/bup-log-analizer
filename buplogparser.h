@@ -5,6 +5,9 @@
 #include <QFile>
 #include <QtPositioning/QGeoCoordinate>
 #include <QGeoPath>
+#include <QAbstractSeries>
+#include <QLineSeries>
+#include <QXYSeries>
 
 class BupLogParser : public QObject
 {
@@ -17,10 +20,7 @@ public:
     bool setFile(QString);
     void runParsing(void);
 
-    Q_INVOKABLE  QGeoPath getTrack(QString latitudeTag,
-                                   QString longitudeTag,
-                                   QString altitudeTag);
-
+Q_INVOKABLE    void qwertyupdate(QtCharts::QAbstractSeries *series);
 
 private:
     QStringList tags;
@@ -32,9 +32,9 @@ private:
 signals:
 
 public slots:
-//    QGeoPath getTrack(QString latitudeTag,
-//                                    QString longitudeTag,
-//                                    QString altitudeTag);
+    QGeoPath getTrack(QString latitudeTag,
+                                    QString longitudeTag,
+                                    QString altitudeTag);
 
 };
 

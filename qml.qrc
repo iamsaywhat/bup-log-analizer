@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>GpsTracker.qml</file>
+        <file>Graph.qml</file>
     </qresource>
 </RCC>
