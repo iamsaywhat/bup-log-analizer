@@ -18,7 +18,7 @@ Window {
     }
     Button {
 
-        onClicked: d.addData();
+        onClicked: d.addSeries ("ffff");
     }
 
 }

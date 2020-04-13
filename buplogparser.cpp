@@ -75,15 +75,26 @@ QGeoPath BupLogParser::getTrack(QString latitudeTag,
         qDebug() << track.at(i);
     return QGeoPath(track);
 }
+QList<QPointF> BupLogParser::createSeries(QString xTag, QString yTag){
+     QList<QPointF> series;
+     int xIndex = tags.indexOf(xTag);
+     int yIndex = tags.indexOf(yTag);
 
-void BupLogParser::qwertyupdate(QtCharts::QAbstractSeries *series){
+     if(xIndex == -1 || yIndex == -1)
+         return series;
+
+     for(int i = 0; i < data.at(xIndex)->size(); i++){
+         double x = data.at(xIndex)->at(i).toDouble();
+         double y = data.at(yIndex)->at(i).toDouble();
+         series.append(QPointF(x,y));
+     }
+     return series;
+}
+void BupLogParser::getSeries(QtCharts::QAbstractSeries *series){
 
     QtCharts::QXYSeries *xySeries = static_cast<QtCharts::QXYSeries *>(series);
-
     xySeries->clear();
-
-    // Use replace instead of clear + append, it's optimized for performance
-    QList<QPointF> aaa;
-    aaa << QPointF(0,0) << QPointF(1,5) << QPointF (2, 7);
-    xySeries->append(aaa);
+    xySeries->append(createSeries("Model_Lat, deg: ", "Model_Lon, deg: "));
+    for(int i = 0; i < xySeries->count(); i++)
+        qDebug() << xySeries->at(i);
 }

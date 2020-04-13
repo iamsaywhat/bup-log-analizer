@@ -20,7 +20,7 @@ public:
     bool setFile(QString);
     void runParsing(void);
 
-Q_INVOKABLE    void qwertyupdate(QtCharts::QAbstractSeries *series);
+
 
 private:
     QStringList tags;
@@ -28,13 +28,15 @@ private:
     QFile file;
 
     void clear(void);
+    QList<QPointF> createSeries(QString xTag, QString yTag);
 
 signals:
 
 public slots:
     QGeoPath getTrack(QString latitudeTag,
-                                    QString longitudeTag,
-                                    QString altitudeTag);
+                      QString longitudeTag,
+                      QString altitudeTag);
+    void getSeries(QtCharts::QAbstractSeries *series);
 
 };
 
