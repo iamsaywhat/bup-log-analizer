@@ -33,6 +33,7 @@ private:
 signals:
 
 public slots:
+    QStringList getTags(void);
     QGeoPath getTrack(QString latitudeTag,
                       QString longitudeTag,
                       QString altitudeTag);

@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     //context->setContextObject(&parser);
 
     QStringList tags;
-    tags << "Model_Lat, deg: "<< "Model_Lon, deg: " << "Model_Alt, m: ";
+    tags << "Model_Lat, deg: "<< "Model_Lon, deg: " << "Model_Alt, m: " << "Timestamp, sec: " << "MAP, m: ";
     parser.setTags(tags);
     parser.setFile("D:/Qt project/saulog.log");
     parser.runParsing();

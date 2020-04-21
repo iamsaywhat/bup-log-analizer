@@ -3,5 +3,7 @@
         <file>main.qml</file>
         <file>GpsTracker.qml</file>
         <file>Graph.qml</file>
+        <file>AppHeader.qml</file>
+        <file>WidgetsWorkspace.qml</file>
     </qresource>
 </RCC>

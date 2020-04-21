@@ -26,6 +26,9 @@ void BupLogParser::setTags(QStringList& list){
         data.append(tagData);
     }
 }
+QStringList BupLogParser::getTags(void){
+    return tags;
+}
 bool BupLogParser::setFile(QString path){
     if(file.exists(path)){
         file.setFileName(path);
@@ -94,7 +97,7 @@ void BupLogParser::getSeries(QtCharts::QAbstractSeries *series){
 
     QtCharts::QXYSeries *xySeries = static_cast<QtCharts::QXYSeries *>(series);
     xySeries->clear();
-    xySeries->append(createSeries("Model_Lat, deg: ", "Model_Lon, deg: "));
+    xySeries->append(createSeries( "Timestamp, sec: ", "MAP, m: "));
     for(int i = 0; i < xySeries->count(); i++)
         qDebug() << xySeries->at(i);
 }

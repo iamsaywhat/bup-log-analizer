@@ -46,9 +46,14 @@ Item {
     }
     ChartView {
         id: chartView
-        anchors.fill: parent
+        //anchors.fill: parent
         antialiasing: true
         theme: ChartView.ChartThemeDark
+
+        x: -10                       // This is hack for removing
+        y: -10                       // weird margins or spacing
+        width: parent.width + 20     // In the future i'll found
+        height: parent.height + 20   // another way to fix it
 
         ValueAxis {
             id: axisX
