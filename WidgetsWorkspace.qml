@@ -12,12 +12,7 @@ Item {
         id: widgets
         anchors.fill: parent;
         padding: 0
-        Rectangle {
-            anchors.fill: widgets;
-            color: 'red';
-        }
         GpsTracker {
-            //anchors.fill: widgets
         }
     }
     PageIndicator {

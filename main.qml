@@ -51,7 +51,12 @@ ApplicationWindow {
                     padding: 0
                     width: parent.width
                     text: qsTr('Open file')
-                    onClicked: menu.model = parser.getTags();
+                    onClicked: {
+                        //menu.model = parser.getTags();
+                        paneStack.pop(null);
+                        paneStack.push(openFilePane);
+                        drawer.close();
+                    }
                 }
                 Button {
                     id: addWidgetButton
@@ -61,7 +66,11 @@ ApplicationWindow {
                     anchors.top: openFileButton.bottom
                     width: parent.width
                     text: qsTr('Add widget')
-                    onClicked: menu.model = parser.getTags();
+                    onClicked: {
+                        menu.model = parser.getTags();
+                        paneStack.pop(null);
+                        paneStack.push(addWidgetPane);
+                    }
                 }
                 MenuSeparator {
                     parent: header
@@ -124,10 +133,11 @@ ApplicationWindow {
     StackView {
         id: paneStack
         anchors.fill: parent;
+        anchors.topMargin: overlayHeader.height
         initialItem: widgetPane
         Pane {
             id: widgetPane
-            anchors.fill: parent;
+            //anchors.fill: parent;
             padding: 0
             WidgetsWorkspace {
                 id: widgets
@@ -135,15 +145,15 @@ ApplicationWindow {
             }
         }
     }
-//    Pane {
-//        id: openFilePane
-//        anchors.fill: parent;
-//        TextInput {
-//          text: 'Соси жопу'
-//        }
-//    }
-//    Pane {
-//        id: addWidgetPane
-//        anchors.fill: parent;
-//    }
+    Component {
+        id: openFilePane
+        OpenFilePage {
+            onCloseButtonClick: paneStack.pop(null);
+        }
+    }
+    Component {
+        id: addWidgetPane
+        AddWidgetPage {
+        }
+    }
 }

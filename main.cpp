@@ -4,6 +4,7 @@
 #include <QQmlContext>
 #include <QDebug>
 #include "buplogparser.h"
+#include "filesystemmodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -17,13 +18,15 @@ int main(int argc, char *argv[])
 
     BupLogParser parser;
     context->setContextProperty("parser", &parser);
-    //context->setContextObject(&parser);
+
+    FileSystemModel fileSystemModel;
+    context->setContextProperty("fileSystemModel", &fileSystemModel);
 
     QStringList tags;
     tags << "Model_Lat, deg: "<< "Model_Lon, deg: " << "Model_Alt, m: " << "Timestamp, sec: " << "MAP, m: ";
     parser.setTags(tags);
-    parser.setFile("D:/Qt project/saulog.log");
-    parser.runParsing();
+    //parser.setFile("D:/Qt project/saulog.log");
+    //parser.runParsing();
 
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));

@@ -17,9 +17,6 @@ public:
     explicit BupLogParser(QObject *parent = nullptr);
     ~BupLogParser(void);
     void setTags(QStringList&);
-    bool setFile(QString);
-    void runParsing(void);
-
 
 
 private:
@@ -33,6 +30,8 @@ private:
 signals:
 
 public slots:
+    bool setFile(QString);
+    void runParsing(void);
     QStringList getTags(void);
     QGeoPath getTrack(QString latitudeTag,
                       QString longitudeTag,

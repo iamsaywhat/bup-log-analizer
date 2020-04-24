@@ -5,5 +5,7 @@
         <file>Graph.qml</file>
         <file>AppHeader.qml</file>
         <file>WidgetsWorkspace.qml</file>
+        <file>OpenFilePage.qml</file>
+        <file>AddWidgetPage.qml</file>
     </qresource>
 </RCC>

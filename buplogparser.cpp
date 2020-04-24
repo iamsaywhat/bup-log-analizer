@@ -53,8 +53,8 @@ void BupLogParser::runParsing(void){
     if(file.isOpen())
         file.close();
 
-    qDebug() << *data.at(0);
-    qDebug() << *data.at(1);
+//    qDebug() << *data.at(0);
+//    qDebug() << *data.at(1);
 }
 QGeoPath BupLogParser::getTrack(QString latitudeTag,
                                              QString longitudeTag,
@@ -74,8 +74,8 @@ QGeoPath BupLogParser::getTrack(QString latitudeTag,
         double altitude = data.at(altitudeIndex)->at(i).toDouble();
         track.append(QGeoCoordinate(latitude, longitude, altitude));
     }
-    for(int i = 0; i < track.count(); i++)
-        qDebug() << track.at(i);
+//    for(int i = 0; i < track.count(); i++)
+//        qDebug() << track.at(i);
     return QGeoPath(track);
 }
 QList<QPointF> BupLogParser::createSeries(QString xTag, QString yTag){
@@ -98,6 +98,6 @@ void BupLogParser::getSeries(QtCharts::QAbstractSeries *series){
     QtCharts::QXYSeries *xySeries = static_cast<QtCharts::QXYSeries *>(series);
     xySeries->clear();
     xySeries->append(createSeries( "Timestamp, sec: ", "MAP, m: "));
-    for(int i = 0; i < xySeries->count(); i++)
-        qDebug() << xySeries->at(i);
+//    for(int i = 0; i < xySeries->count(); i++)
+//        qDebug() << xySeries->at(i);
 }
