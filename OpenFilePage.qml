@@ -31,6 +31,10 @@ Item {
                     onClicked: {
                         fileSystemModel.cdUp();
                     }
+//                    background: Rectangle {
+//                        anchors.fill: parent
+//                        color: 'red'
+//                    }
                 }
             }
 
@@ -43,12 +47,15 @@ Item {
                     if(dir)
                         fileSystemModel.cd(fullPath);
                     else if(name){
-                        parser.setFile(fullPath);
-                        console.debug(fullPath);
-                        parser.runParsing();
-                        parser.getTags();
+                        parser.openFile(fullPath);
+                        //parser.getTags();
                     }
                 }
+//                Rectangle {
+//                    id: background
+//                    anchors.fill: parent
+//                    color: dir ? 'red' : 'blue'
+//                }
             }
             ScrollIndicator.vertical: ScrollIndicator { }
         }
@@ -60,6 +67,5 @@ Item {
             anchors.topMargin: 20
             onClicked: closeButtonClick();
         }
-
     }
 }

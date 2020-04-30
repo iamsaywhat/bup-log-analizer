@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 import QtCharts 2.12
+import QtQml.Models 2.13
 
 ApplicationWindow {
     id: window
@@ -67,9 +68,10 @@ ApplicationWindow {
                     width: parent.width
                     text: qsTr('Add widget')
                     onClicked: {
-                        menu.model = parser.getTags();
+                        //menu.model = parser.getTags();
                         paneStack.pop(null);
                         paneStack.push(addWidgetPane);
+                        drawer.close();
                     }
                 }
                 MenuSeparator {
@@ -79,20 +81,17 @@ ApplicationWindow {
                     visible: !menu.atYBeginning
                 }
             }
-            //model: 50
+            model: ListModel {
+                id:listModel
+
+            }
 
             delegate: ItemDelegate {
                 //text: qsTr("%1").arg(parser.getTags().at(index))
                 text: modelData
                 width: parent.width
                 onClicked: {
-                    var newObject = Qt.createQmlObject('Graph {anchors.fill: widgets;}',
-                                                       widgets,
-                                                       "dynamicSnippet1");
-                    newObject.addSeries ("ffff");
-                    widgets.addWidget(newObject);
-                    //widgets.push(newObject);
-                    //widgets.setCurrentIndex(0);
+                    widgets.switchAt(model.index+1);
                 }
             }
             ScrollIndicator.vertical: ScrollIndicator { }
@@ -148,12 +147,23 @@ ApplicationWindow {
     Component {
         id: openFilePane
         OpenFilePage {
+            id: openFilePaneRoot
             onCloseButtonClick: paneStack.pop(null);
         }
     }
     Component {
         id: addWidgetPane
         AddWidgetPage {
+            id: addWidgetPaneRoot
+            onCloseButtonClick: paneStack.pop(null);
+            onAddWidged: {
+                var newObject = Qt.createQmlObject('Graph {}',
+                                                   widgets,
+                                                   "dynamicSnippet1");
+                newObject.addSeries (name , xname, yname);
+                widgets.addWidget(newObject);
+                listModel.append({"name": name});
+            }
         }
     }
 }

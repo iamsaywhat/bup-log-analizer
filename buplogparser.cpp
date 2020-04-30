@@ -12,31 +12,48 @@ BupLogParser::~BupLogParser(void){
     if(file.isOpen())
         file.close();
 }
-void BupLogParser::clear(void){
-    for(int i = 0; i < data.count(); i++) {
-        QStringList *tagData = data.at(i);
+void BupLogParser::clear(void){                  // Здесь производим гарантированное освобождение памяти
+    for(int i = 0; i < data.count(); i++) {      // data содержит список указателей на динамически создаваемые списки
+        QStringList *tagData = data.at(i);       // проходим по всем указателям и освобождаем память
         delete  tagData;
     }
 }
 void BupLogParser::setTags(QStringList& list){
-    tags = list;
-    clear();
-    for(int i = 0; i < tags.count(); i++){
-        QStringList *tagData = new  QStringList;
-        data.append(tagData);
+    tags = list;                                     // Размещаем список тэгов
+    clear();                                         // Освобождаем память (если есть что освобождать
+    for(int i = 0; i < tags.count(); i++){           // по количеству тэгов начинаем динамически создавать
+        QStringList *tagData = new  QStringList;     // списки данных
+        data.append(tagData);                        // и сохранять их указатели в контейнер
     }
 }
 QStringList BupLogParser::getTags(void){
     return tags;
 }
-bool BupLogParser::setFile(QString path){
+
+
+
+
+bool BupLogParser::openFile(QString path){
     if(file.exists(path)){
-        file.setFileName(path);
+        file.setFileName(path);    
+        QStringList tagList;
+        tagList << "Timestamp, sec: " << "SNS_Lat: " << "SNS_Lon: " << "SNS_Alt: " << "SNS_Vel_lat: " << "SNS_Vel_lon: " <<
+                "SNS_Vel_alt: " << "SNS_Course: " << "SNS_Heading_true: " << "SNS_Heading_mgn: " << "SNS_Pitch: " <<
+                "SNS_Roll: " << "SWS_TrueSpeed: " << "SWS_InstrumentSpeed: " << "BIML_Pos: " << "BIMR_Pos: " << "SystemState: "
+                "Model_Lat, deg: " << "Model_Lon, deg: " << "Model_Alt, m: " << "Model_VelocityLat, m/s: " << "Model_VelocityLon, m/s: " <<
+                "Model_VelocityAlt, m/s: " << "Model_HeadingTrue, rad: " << "Model_HeadingMgn, rad: " << "Model_Course, rad: " <<
+                "Model_Pitch, rad: " << "Model_Roll, rad: " << "MAP, m: " << "Model_BIM_CMD: " << "Model_TD_CMD: ";
+        setTags(tagList);
+        runParsing();
+        emit fileOpen();
         return true;
     }
     else
-        return false;
+        return false; 
 }
+
+
+
 void BupLogParser::runParsing(void){
     if (file.open(QIODevice::ReadOnly)){
         while(!file.atEnd()){
@@ -52,13 +69,12 @@ void BupLogParser::runParsing(void){
     }
     if(file.isOpen())
         file.close();
-
-//    qDebug() << *data.at(0);
-//    qDebug() << *data.at(1);
 }
+
+
 QGeoPath BupLogParser::getTrack(QString latitudeTag,
-                                             QString longitudeTag,
-                                             QString altitudeTag)
+                                QString longitudeTag,
+                                QString altitudeTag)
 {
     QList<QGeoCoordinate> track;
     int latitudeIndex = tags.indexOf(latitudeTag);
@@ -93,11 +109,10 @@ QList<QPointF> BupLogParser::createSeries(QString xTag, QString yTag){
      }
      return series;
 }
-void BupLogParser::getSeries(QtCharts::QAbstractSeries *series){
-
+void BupLogParser::getSeries(QtCharts::QAbstractSeries *series, QString xTag, QString yTag){
     QtCharts::QXYSeries *xySeries = static_cast<QtCharts::QXYSeries *>(series);
     xySeries->clear();
-    xySeries->append(createSeries( "Timestamp, sec: ", "MAP, m: "));
+    xySeries->append(createSeries(xTag, yTag));
 //    for(int i = 0; i < xySeries->count(); i++)
 //        qDebug() << xySeries->at(i);
 }

@@ -22,9 +22,9 @@ int main(int argc, char *argv[])
     FileSystemModel fileSystemModel;
     context->setContextProperty("fileSystemModel", &fileSystemModel);
 
-    QStringList tags;
-    tags << "Model_Lat, deg: "<< "Model_Lon, deg: " << "Model_Alt, m: " << "Timestamp, sec: " << "MAP, m: ";
-    parser.setTags(tags);
+    //QStringList tags;
+    //tags << "Model_Lat, deg: "<< "Model_Lon, deg: " << "Model_Alt, m: " << "Timestamp, sec: " << "MAP, m: ";
+    //parser.setTags(tags);
     //parser.setFile("D:/Qt project/saulog.log");
     //parser.runParsing();
 

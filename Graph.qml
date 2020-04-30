@@ -3,18 +3,18 @@ import QtCharts 2.12
 
 Item {
     id: root
-    anchors.fill: parent
+    //anchors.fill: parent
 
     property real autoscaleMinX: 0
     property real autoscaleMaxX: 0
     property real autoscaleMinY: 0
     property real autoscaleMaxY: 0
 
-    // Add series data to chart
-    function addSeries (name){
-        var lineSeries = chartView.createSeries(ChartView.SeriesTypeLine, name, axisX, axisY);
-        parser.getSeries(lineSeries);
 
+    // Add series data to chart
+    function addSeries (name, xname, yname){
+        var lineSeries = chartView.createSeries(ChartView.SeriesTypeLine, name, axisX, axisY);
+        parser.getSeries(lineSeries, xname, yname);
         // Update max min X-axes for autoscale
         if(chartView.count == 1) // the first data appended have to initialiize autoscale vars
             autoscaleMinX = lineSeries.at(0).x;
@@ -46,14 +46,11 @@ Item {
     }
     ChartView {
         id: chartView
-        //anchors.fill: parent
         antialiasing: true
         theme: ChartView.ChartThemeDark
 
-        x: -10                       // This is hack for removing
-        y: -10                       // weird margins or spacing
-        width: parent.width + 20     // In the future i'll found
-        height: parent.height + 20   // another way to fix it
+        anchors { fill: parent; margins: -10 }             // This is hack for removing  weird margins or spacing
+//        margins { right: 0; bottom: 0; left: 0; top: 0 } // In the future i'll found another way to fix it
 
         ValueAxis {
             id: axisX
@@ -67,7 +64,7 @@ Item {
         }
     }
     MouseArea {
-        anchors.fill: parent
+        //anchors.fill: parent
         onWheel: {
             if (wheel.modifiers & Qt.ControlModifier) {
                 autoscaleMinX = autoscaleMinX + (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;

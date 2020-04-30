@@ -16,27 +16,28 @@ class BupLogParser : public QObject
 public:
     explicit BupLogParser(QObject *parent = nullptr);
     ~BupLogParser(void);
-    void setTags(QStringList&);
-
 
 private:
     QStringList tags;
     QList<QStringList*> data;
     QFile file;
 
+    void setTags(QStringList&);
+    void runParsing(void);
     void clear(void);
     QList<QPointF> createSeries(QString xTag, QString yTag);
 
 signals:
+    void fileOpen(void);
 
 public slots:
-    bool setFile(QString);
-    void runParsing(void);
+    bool openFile(QString);
+
     QStringList getTags(void);
     QGeoPath getTrack(QString latitudeTag,
                       QString longitudeTag,
                       QString altitudeTag);
-    void getSeries(QtCharts::QAbstractSeries *series);
+    void getSeries(QtCharts::QAbstractSeries *series, QString xTag, QString yTag);
 
 };
 

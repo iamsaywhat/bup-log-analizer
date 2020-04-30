@@ -6,6 +6,9 @@ Item {
     function addWidget(item){
         widgets.addItem(item);
     }
+    function switchAt(index){
+        widgets.setCurrentIndex(index);
+    }
 
     SwipeView
     {
