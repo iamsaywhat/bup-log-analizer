@@ -1,10 +1,12 @@
 ﻿#include "filesystemmodel.h"
 #include <QDebug>
+#include <QStorageInfo>
+
+
 FileSystemModel::FileSystemModel(QObject *parent)
     : QAbstractListModel(parent),
       _dir(QDir("/"))
 {
-    //_dir.setNameFilters(QStringList("*.log"));
     updateDirInfo();
 
 }
@@ -46,8 +48,11 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const{
     const auto& item = _content[row];
     switch (role) {
     case NAME:
-        if(item.fileName().isEmpty())
-            return item.absoluteFilePath();
+        if(item.fileName().isEmpty()){
+            QString driveName = QStorageInfo(item.absoluteFilePath()).name();
+            driveName += " (" + item.absoluteFilePath() + ")";
+            return driveName;
+        }
        else
             return item.fileName();
     case DIR:
@@ -71,6 +76,7 @@ void FileSystemModel::cdUp(void){
         beginResetModel();
         updateDrivesInfo();
         endResetModel();
+        emit currentPathChanged(currentPath());
     }
 }
 void FileSystemModel::cd(const QString& path){
