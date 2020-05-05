@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.13
+import QtQml.Models 2.13
 
 Item {
     id: root
@@ -11,6 +12,11 @@ Item {
     function setData () {
        plotXAxisSelector.model = parser.getTags();
        plotYAxisSelector.model = parser.getTags();
+
+    }
+    function setActivelWidgetList (list) {
+        plotWidgetSelector.textRole = 'name';
+        plotWidgetSelector.model = list;
     }
 
     Component.onCompleted:  setData();
@@ -45,21 +51,23 @@ Item {
                 }
             }
         }
-//        Item {
-//            id: mapMenu
-//            ComboBox {
-//                id: mapDataSelector
-//                editable: false
-//                model: ListView {
+        Item {
+            id: mapMenu
+            width: 200
+            anchors.top: widgetSelector.bottom
+            ComboBox {
+                id: mapDataSelector
+                editable: false
+                model: ListView {
 
-//                }
-//            }
+                }
+            }
 
-//            Button {
-//                id: addMapButton
-//            }
+            Button {
+                id: addMapButton
+            }
 
-//        }
+        }
 
         Item {
             id: plotMenu
@@ -70,6 +78,18 @@ Item {
                 anchors.top: parent.bottom
                 width: parent.width
                 editable: true
+                delegate: ItemDelegate {
+                    text: model.name
+                    width: parent.width
+                    visible: model.type === 'empty' || model.type === 'plot'
+                    height: ((model.type === 'empty' || model.type === 'plot') ? 50 : 0)
+                    onClicked: {
+                        if(model.index === 0)
+                            plotWidgetSelector.editable = true;
+                        else
+                            plotWidgetSelector.editable = false;
+                    }
+                }
             }
             ComboBox {
                 id: plotXAxisSelector
@@ -87,11 +107,13 @@ Item {
                 anchors.top: plotYAxisSelector.bottom
                 text: qsTr("Add")
                 onClicked: {
-                    console.debug(plotWidgetSelector.editText);
-                    console.debug(plotXAxisSelector.displayText);
-                    addWidged(plotWidgetSelector.editText,
-                              plotXAxisSelector.currentText,
-                              plotYAxisSelector.currentText);
+                    var name = plotWidgetSelector.editText;
+                    var xAxisName = plotXAxisSelector.currentText;
+                    var yAxixName = plotYAxisSelector.currentText;
+//                    plotWidgetSelector.model.append({'type': 'plot',
+//                                                     'name': name});
+                    addWidged(name, xAxisName, yAxixName);
+                    console.debug(plotWidgetSelector.model);
                 }
             }
         }

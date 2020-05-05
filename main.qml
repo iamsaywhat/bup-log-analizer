@@ -53,7 +53,6 @@ ApplicationWindow {
                     width: parent.width
                     text: qsTr('Open file')
                     onClicked: {
-                        //menu.model = parser.getTags();
                         paneStack.pop(null);
                         paneStack.push(openFilePane);
                         drawer.close();
@@ -72,6 +71,7 @@ ApplicationWindow {
                         paneStack.pop(null);
                         paneStack.push(addWidgetPane);
                         drawer.close();
+                        paneStack.currentItem.setActivelWidgetList(activeWidgetsModel);
                     }
                 }
                 MenuSeparator {
@@ -81,53 +81,38 @@ ApplicationWindow {
                     visible: !menu.atYBeginning
                 }
             }
-            model: ListModel {
-                id:listModel
-
-            }
+            model: activeWidgetsModel
 
             delegate: ItemDelegate {
-                //text: qsTr("%1").arg(parser.getTags().at(index))
-                text: modelData
+                text: model.name
                 width: parent.width
+                visible: model.type === "map" || model.type === "plot"
+                height: ((model.type === 'map' || model.type === 'plot') ? 50 : 0)
                 onClicked: {
                     widgets.switchAt(model.index+1);
                 }
             }
             ScrollIndicator.vertical: ScrollIndicator { }
-
         }
     }
-//    Button {
-//        anchors.bottom: parent.bottom
-//        anchors.right: parent.right
-//        onClicked: {
-//            //d.addSeries ("ffff");
-
-//            for(var i = 0; i < parser.getTags().length; i++)
-//            {
-//               console.debug(parser.getTags()[i]);
-//               console.debug(parser.getTags().length);
-//            }
-//            menu.model = parser.getTags();
-//        }
-//    }
-    //StackView
-//    SwipeView
-//    {
-//        id: widgets
-//        anchors.fill: parent;
-//        Rectangle {
-//            anchors.fill: widgets;
-//            color: 'red';
-//        }
-//        GpsTracker {
-//            anchors.fill: widgets
-//        }
-////        Graph {
-////            id: d
-////        }
-//    }
+    ListModel {
+        id:activeWidgetsModel
+        function find (name){
+            for(var i = 0; i < count; i++){
+                if(get(i).name === name){
+                    return i;
+                }
+            }
+            return -1;
+        }
+        Component.onCompleted: {
+            append({'type': 'empty', 'name': '<new widget>'});
+//            append({'type': 'plot', 'name': 'plot i hui '});
+//            append({'type': 'plot', 'name': 'plot и залупа'});
+//            append({'type': 'map', 'name': '<насвай1>'});
+//            append({'type': 'map', 'name': '<насвай2>'});
+        }
+    }
 
     StackView {
         id: paneStack
@@ -157,12 +142,16 @@ ApplicationWindow {
             id: addWidgetPaneRoot
             onCloseButtonClick: paneStack.pop(null);
             onAddWidged: {
-                var newObject = Qt.createQmlObject('Graph {}',
-                                                   widgets,
-                                                   "dynamicSnippet1");
-                newObject.addSeries (name , xname, yname);
-                widgets.addWidget(newObject);
-                listModel.append({"name": name});
+                var itemIndex = activeWidgetsModel.find(name);
+                if(itemIndex === -1){
+                    activeWidgetsModel.append({'type': 'plot', 'name': name});
+                    var newObject = Qt.createQmlObject('Graph {}', widgets, "dynamicSnippet1");
+                    newObject.addSeries (yname , xname, yname);
+                    widgets.addWidget(newObject);
+                }
+                else {
+                    widgets.itemAt(itemIndex).addSeries (yname , xname, yname);
+                }
             }
         }
     }

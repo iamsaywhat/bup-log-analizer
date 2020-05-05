@@ -16,11 +16,13 @@ public:
     {
         NAME,
         DIR,
+        DRIVE,
         FULL_PATH
     };
 
     FileSystemModel(QObject *parent = nullptr);
-    void updateFileList (void);
+    void updateDirInfo (void);
+    void updateDrivesInfo(void);
     QString currentPath(void) const;
     void setCurrentPath(QString);
 

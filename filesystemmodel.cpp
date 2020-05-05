@@ -1,16 +1,21 @@
-#include "filesystemmodel.h"
+﻿#include "filesystemmodel.h"
 #include <QDebug>
 FileSystemModel::FileSystemModel(QObject *parent)
     : QAbstractListModel(parent),
       _dir(QDir("/"))
 {
-    updateFileList();
+    //_dir.setNameFilters(QStringList("*.log"));
+    updateDirInfo();
+
 }
-void FileSystemModel::updateFileList (void){
-    _content = _dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files,
+void FileSystemModel::updateDirInfo (void){
+    _content = _dir.entryInfoList(QStringList("*.log"), QDir::NoDotAndDotDot | QDir::Dirs | QDir::AllDirs | QDir::Files,
                                   QDir::DirsFirst | QDir::Name);
-    qDebug() << _content;
 }
+void FileSystemModel::updateDrivesInfo(void){
+    _content = _dir.drives();
+}
+
 QString FileSystemModel::currentPath(void) const{
     return _dir.absolutePath();
 }
@@ -27,41 +32,51 @@ QHash<int, QByteArray> FileSystemModel::roleNames(void) const{
     static QHash<int, QByteArray> roles = {
         {NAME, "name"},
         {DIR,  "dir"},
+        {DRIVE, "drive"},
         {FULL_PATH, "fullPath"}
     };
     return roles;
 }
 
 QVariant FileSystemModel::data(const QModelIndex &index, int role) const{
-   const int row = index.row();
-   if(_content.count() < row)
+    const int row = index.row();
+    if(_content.count() < row)
        return QVariant();
 
-   const auto& item = _content[row];
-   switch (role) {
-   case NAME:
-       return item.fileName();
-   case DIR:
+    const auto& item = _content[row];
+    switch (role) {
+    case NAME:
+        if(item.fileName().isEmpty())
+            return item.absoluteFilePath();
+       else
+            return item.fileName();
+    case DIR:
        return item.isDir();
-   case FULL_PATH:
+    case DRIVE:
+       return item.fileName().isEmpty();
+    case FULL_PATH:
        return item.absoluteFilePath();
-   default:
+    default:
        return QVariant();
    }
 }
 void FileSystemModel::cdUp(void){
     if(_dir.cdUp()){
         beginResetModel();
-        updateFileList();
+        updateDirInfo();
         endResetModel();
         emit currentPathChanged(currentPath());
     }
-    qDebug() << "hhhh";
+    else {
+        beginResetModel();
+        updateDrivesInfo();
+        endResetModel();
+    }
 }
 void FileSystemModel::cd(const QString& path){
          beginResetModel();
          _dir = QDir(path);
-         updateFileList();
+         updateDirInfo();
          endResetModel();
          emit currentPathChanged(path);
 }

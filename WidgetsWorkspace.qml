@@ -9,6 +9,9 @@ Item {
     function switchAt(index){
         widgets.setCurrentIndex(index);
     }
+    function itemAt(index){
+        return widgets.itemAt(index);
+    }
 
     SwipeView
     {
