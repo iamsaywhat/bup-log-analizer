@@ -26,6 +26,10 @@ public:
         Back,
         Drive,
     };
+
+    Q_ENUM(Roles)
+    Q_ENUM(ItemTypes)
+
     struct Item {
         QString name;
         QString fullPath;
@@ -43,9 +47,9 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
 private:
-    QDir _dir;
-    QFileInfoList _content;
+    QDir dir;
     QList<Item> items;
+    const QString cdItemName = "up";
 
 signals:
     void currentPathChanged(QString);
@@ -54,5 +58,6 @@ public slots:
     void cdUp(void);
     void cd(const QString& path);
 };
+
 
 #endif // FILESYSTEM_H
