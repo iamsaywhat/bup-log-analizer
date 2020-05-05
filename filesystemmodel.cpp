@@ -8,14 +8,39 @@ FileSystemModel::FileSystemModel(QObject *parent)
       _dir(QDir("/"))
 {
     updateDirInfo();
+}
 
-}
 void FileSystemModel::updateDirInfo (void){
-    _content = _dir.entryInfoList(QStringList("*.log"), QDir::NoDotAndDotDot | QDir::Dirs | QDir::AllDirs | QDir::Files,
-                                  QDir::DirsFirst | QDir::Name);
-}
-void FileSystemModel::updateDrivesInfo(void){
-    _content = _dir.drives();
+    beginResetModel();
+    items.clear();
+    if(_dir.isRoot()){
+        items.append(Item({"back", "drives", Back}));
+        QFileInfoList currentDir = _dir.entryInfoList(QStringList("*.log"), QDir::NoDotAndDotDot | QDir::Dirs | QDir::AllDirs | QDir::Files,
+                                                                            QDir::DirsFirst | QDir::Name);
+        for(int i = 0; i < currentDir.count(); i++){
+            items.append(Item({currentDir.at(i).fileName(),
+                               currentDir.at(i).absoluteFilePath(),
+                               currentDir.at(i).isFile() ? File : Dir}));
+        }
+    }
+    else {
+        QString currentPath = _dir.absolutePath();
+        _dir.cdUp();
+        items.append(Item({"back",_dir.absolutePath(), Back}));
+        _dir.cd(currentPath);
+        QFileInfoList currentDir = _dir.entryInfoList(QStringList("*.log"), QDir::NoDotAndDotDot | QDir::Dirs | QDir::AllDirs | QDir::Files,
+                                                                            QDir::DirsFirst | QDir::Name);
+        for(int i = 0; i < currentDir.count(); i++){
+            items.append(Item({currentDir.at(i).fileName(),
+                               currentDir.at(i).absoluteFilePath(),
+                               currentDir.at(i).isFile() ? File : Dir}));
+        }
+    }
+//    for(int i = 0; i < items.count(); i++) {
+//        qDebug() << items.at(i).name << items.at(i).fullPath << items.at(i).type;
+//    }
+    endResetModel();
+    emit currentPathChanged(currentPath());
 }
 
 QString FileSystemModel::currentPath(void) const{
@@ -27,13 +52,14 @@ void FileSystemModel::setCurrentPath(QString){
 
 int FileSystemModel::rowCount(const QModelIndex &parent) const{
     Q_UNUSED(parent)
-    return _content.count();
+    return items.count();
 }
 
 QHash<int, QByteArray> FileSystemModel::roleNames(void) const{
     static QHash<int, QByteArray> roles = {
         {NAME, "name"},
         {DIR,  "dir"},
+        {DIR_UP, "dir_up"},
         {DRIVE, "drive"},
         {FULL_PATH, "fullPath"}
     };
@@ -41,48 +67,80 @@ QHash<int, QByteArray> FileSystemModel::roleNames(void) const{
 }
 
 QVariant FileSystemModel::data(const QModelIndex &index, int role) const{
+    //qDebug() <<  index, role;
     const int row = index.row();
-    if(_content.count() < row)
+    if(items.count() < row)
        return QVariant();
 
-    const auto& item = _content[row];
+    const auto& item = items.at(row);
     switch (role) {
-    case NAME:
-        if(item.fileName().isEmpty()){
-            QString driveName = QStorageInfo(item.absoluteFilePath()).name();
-            driveName += " (" + item.absoluteFilePath() + ")";
-            return driveName;
-        }
-       else
-            return item.fileName();
+    case NAME:{
+        //qDebug() << item.name;
+        return item.name;
     case DIR:
-       return item.isDir();
+       //qDebug() <<  (item.type == Dir ? true : false);
+       return (item.type == Dir ? true : false);
+    case DIR_UP:
+        //qDebug() << (item.type == Back ? true : false);
+        return (item.type == Back ? true : false);
     case DRIVE:
-       return item.fileName().isEmpty();
+       //qDebug() << (item.type == Drive ? true : false);
+       return (item.type == Drive ? true : false);
     case FULL_PATH:
-       return item.absoluteFilePath();
+       //qDebug() << item.fullPath;
+       return item.fullPath;
     default:
        return QVariant();
+
    }
 }
+}
+
+
 void FileSystemModel::cdUp(void){
-    if(_dir.cdUp()){
+    if(_dir.isRoot()){
         beginResetModel();
-        updateDirInfo();
+        items.clear();
+        QFileInfoList drives = _dir.drives();
+        for(int i = 0; i < drives.count(); i++){
+            QString driveName = QStorageInfo(drives.at(i).absoluteFilePath()).name();
+            driveName += " (" + drives.at(i).absoluteFilePath() + ")";
+            items.append(Item({driveName, drives.at(i).absoluteFilePath(), Drive}));
+        }
         endResetModel();
         emit currentPathChanged(currentPath());
+        for(int i = 0; i < items.count(); i++) {
+            qDebug() << items.at(i).name << items.at(i).fullPath << items.at(i).type;
+        }
     }
     else {
-        beginResetModel();
-        updateDrivesInfo();
-        endResetModel();
-        emit currentPathChanged(currentPath());
+        _dir.cdUp();
+        updateDirInfo();
     }
 }
 void FileSystemModel::cd(const QString& path){
+    qDebug() << path;
+    if(path == "drives")
+    {
+        beginResetModel();
+        items.clear();
+        QFileInfoList drives = _dir.drives();
+        for(int i = 0; i < drives.count(); i++){
+            QString driveName = QStorageInfo(drives.at(i).absoluteFilePath()).name();
+            driveName += " (" + drives.at(i).absoluteFilePath() + ")";
+            items.append(Item({driveName, drives.at(i).absoluteFilePath(), Drive}));
+        }
+        endResetModel();
+        emit currentPathChanged(currentPath());
+//        for(int i = 0; i < items.count(); i++) {
+//            qDebug() << items.at(i).name << items.at(i).fullPath << items.at(i).type;
+//        }
+    }
+    else {
          beginResetModel();
          _dir = QDir(path);
          updateDirInfo();
          endResetModel();
          emit currentPathChanged(path);
+    }
 }

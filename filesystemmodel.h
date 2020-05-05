@@ -16,8 +16,20 @@ public:
     {
         NAME,
         DIR,
+        DIR_UP,
         DRIVE,
         FULL_PATH
+    };
+    enum ItemTypes {
+        File,
+        Dir,
+        Back,
+        Drive,
+    };
+    struct Item {
+        QString name;
+        QString fullPath;
+        ItemTypes type;
     };
 
     FileSystemModel(QObject *parent = nullptr);
@@ -33,6 +45,7 @@ public:
 private:
     QDir _dir;
     QFileInfoList _content;
+    QList<Item> items;
 
 signals:
     void currentPathChanged(QString);

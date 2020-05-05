@@ -17,26 +17,26 @@ Item {
         ListView {
             id: files
             anchors.fill: parent
-            header: Pane {
-                id:header
-                width: parent.width
-                contentHeight: delegate.height
-                padding: 0
-                Button {
-                    id: upButton
-                    spacing: 0
-                    padding: 0
-                    width: parent.width
-                    text: qsTr('...')
-                    onClicked: {
-                        fileSystemModel.cdUp();
-                    }
-//                    background: Rectangle {
-//                        anchors.fill: parent
-//                        color: 'red'
+//            header: Pane {
+//                id:header
+//                width: parent.width
+//                contentHeight: delegate.height
+//                padding: 0
+//                Button {
+//                    id: upButton
+//                    spacing: 0
+//                    padding: 0
+//                    width: parent.width
+//                    text: qsTr('...')
+//                    onClicked: {
+//                        fileSystemModel.cdUp();
 //                    }
-                }
-            }
+////                    background: Rectangle {
+////                        anchors.fill: parent
+////                        color: 'red'
+////                    }
+//                }
+//            }
 
             model: fileSystemModel
             delegate: ItemDelegate {
@@ -44,11 +44,11 @@ Item {
                 text: name
                 width: parent.width
                 onClicked: {
-                    if(dir)
+                    if(dir || dir_up || drive)
                         fileSystemModel.cd(fullPath);
-                    else if(name){
+                    else {
                         parser.openFile(fullPath);
-                        //parser.getTags();
+                        closeButtonClick();
                     }
                 }
 //                Rectangle {
