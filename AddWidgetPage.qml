@@ -7,7 +7,8 @@ Item {
     id: root
 
     signal closeButtonClick();
-    signal addWidged(string name, string xname, string yname);
+    signal addPlot(string name, string xname, string yname);
+    signal addMap(string name, string latitude, string longitude);
 
     function setData () {
        plotXAxisSelector.model = parser.getTags();
@@ -102,26 +103,31 @@ Item {
                 anchors.top: plotXAxisSelector.bottom
             }
             Button {
-                id: addPlot
+                id: addPlotButton
                 width: parent.width
                 anchors.top: plotYAxisSelector.bottom
                 text: qsTr("Add")
                 onClicked: {
-                    var name = plotWidgetSelector.editText;
-                    var xAxisName = plotXAxisSelector.currentText;
-                    var yAxixName = plotYAxisSelector.currentText;
-//                    plotWidgetSelector.model.append({'type': 'plot',
-//                                                     'name': name});
-                    addWidged(name, xAxisName, yAxixName);
-                    console.debug(plotWidgetSelector.model);
+
+                    if(plotWidgetSelector.editText == plotWidgetSelector.currentText
+                       && plotWidgetSelector.editable){
+                        console.debug(plotWidgetSelector.editText);
+                        console.debug(plotWidgetSelector.currentText);
+                        console.debug("wrong name");
+                    }
+                    else {
+                        var name = plotWidgetSelector.editText;
+                        var xAxisName = plotXAxisSelector.currentText;
+                        var yAxixName = plotYAxisSelector.currentText;
+    //                    plotWidgetSelector.model.append({'type': 'plot',
+    //                                                     'name': name});
+                        addPlot(name, xAxisName, yAxixName);
+                        //console.debug(plotWidgetSelector.model);
+                    }
+
                 }
             }
         }
-
-//        ComboBox {
-//            id: objectType
-//            anchors.top: ggt.bottom
-//        }
 
 
         RoundButton{

@@ -141,17 +141,20 @@ ApplicationWindow {
         AddWidgetPage {
             id: addWidgetPaneRoot
             onCloseButtonClick: paneStack.pop(null);
-            onAddWidged: {
+            onAddPlot: {
                 var itemIndex = activeWidgetsModel.find(name);
                 if(itemIndex === -1){
                     activeWidgetsModel.append({'type': 'plot', 'name': name});
-                    var newObject = Qt.createQmlObject('Graph {}', widgets, "dynamicSnippet1");
+                    var newObject = Qt.createQmlObject('Graph {}', widgets);
                     newObject.addSeries (yname , xname, yname);
                     widgets.addWidget(newObject);
                 }
                 else {
                     widgets.itemAt(itemIndex).addSeries (yname , xname, yname);
                 }
+            }
+            onAddMap: {
+              //  (string name, string latitude, string longitude);
             }
         }
     }

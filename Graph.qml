@@ -16,7 +16,7 @@ Item {
         var lineSeries = chartView.createSeries(ChartView.SeriesTypeLine, name, axisX, axisY);
         parser.getSeries(lineSeries, xname, yname);
         // Update max min X-axes for autoscale
-        if(chartView.count == 1) // the first data appended have to initialiize autoscale vars
+        if(chartView.count === 1) // the first data appended have to initialiize autoscale vars
             autoscaleMinX = lineSeries.at(0).x;
         else
             if(autoscaleMinX  > lineSeries.at(0).x)
@@ -25,7 +25,7 @@ Item {
             autoscaleMaxX = lineSeries.at(lineSeries.count-1).x;
 
         // Update max min Y-axes for autoscale
-        if(chartView.count == 1){ // the first data appended have to initialiize autoscale vars
+        if(chartView.count === 1){ // the first data appended have to initialiize autoscale vars
             autoscaleMinY = lineSeries.at(0).y;
             autoscaleMaxY = lineSeries.at(0).y;
         }
