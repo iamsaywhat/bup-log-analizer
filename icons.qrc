@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/drive.png</file>
+        <file>icons/file.png</file>
+        <file>icons/folder.png</file>
+        <file>icons/return_arrow.png</file>
+        <file>icons/stop.png</file>
+    </qresource>
+</RCC>
