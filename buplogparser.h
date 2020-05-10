@@ -12,28 +12,31 @@
 class BupLogParser : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QStringList tags READ tagList WRITE setTagList NOTIFY tagListChanged)
 
 public:
     explicit BupLogParser(QObject *parent = nullptr);
     ~BupLogParser(void);
+
+
 
 private:
     QStringList tags;
     QList<QStringList*> data;
     QFile file;
 
-    void setTags(QStringList&);
+    void setTagList(QStringList&);
     void runParsing(void);
     void clear(void);
     QList<QPointF> createSeries(QString xTag, QString yTag);
 
 signals:
     void fileOpen(void);
+    void tagListChanged(void);
 
-public slots:
+public slots: 
     bool openFile(QString);
-
-    QStringList getTags(void);
+    QStringList tagList (void) const;
     QGeoPath getTrack(QString latitudeTag,
                       QString longitudeTag,
                       QString altitudeTag);

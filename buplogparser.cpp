@@ -18,7 +18,7 @@ void BupLogParser::clear(void){                  // Здесь производ�
         delete  tagData;
     }
 }
-void BupLogParser::setTags(QStringList& list){
+void BupLogParser::setTagList(QStringList& list){
     tags = list;                                     // Размещаем список тэгов
     clear();                                         // Освобождаем память (если есть что освобождать
     for(int i = 0; i < tags.count(); i++){           // по количеству тэгов начинаем динамически создавать
@@ -26,13 +26,9 @@ void BupLogParser::setTags(QStringList& list){
         data.append(tagData);                        // и сохранять их указатели в контейнер
     }
 }
-QStringList BupLogParser::getTags(void){
+QStringList BupLogParser::tagList (void) const{
     return tags;
 }
-
-
-
-
 bool BupLogParser::openFile(QString path){
     if(file.exists(path)){
         file.setFileName(path);    
@@ -43,17 +39,15 @@ bool BupLogParser::openFile(QString path){
                 "Model_Lat, deg: " << "Model_Lon, deg: " << "Model_Alt, m: " << "Model_VelocityLat, m/s: " << "Model_VelocityLon, m/s: " <<
                 "Model_VelocityAlt, m/s: " << "Model_HeadingTrue, rad: " << "Model_HeadingMgn, rad: " << "Model_Course, rad: " <<
                 "Model_Pitch, rad: " << "Model_Roll, rad: " << "MAP, m: " << "Model_BIM_CMD: " << "Model_TD_CMD: ";
-        setTags(tagList);
+        setTagList(tagList);
         runParsing();
         emit fileOpen();
+        emit tagListChanged();
         return true;
     }
     else
         return false; 
 }
-
-
-
 void BupLogParser::runParsing(void){
     if (file.open(QIODevice::ReadOnly)){
         while(!file.atEnd()){

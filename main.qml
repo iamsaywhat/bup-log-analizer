@@ -53,8 +53,7 @@ ApplicationWindow {
                     width: parent.width
                     text: qsTr('Open file')
                     onClicked: {
-                        paneStack.pop(null);
-                        paneStack.push(openFilePane);
+                        main.setCurrentIndex(0);
                         drawer.close();
                     }
                 }
@@ -67,11 +66,9 @@ ApplicationWindow {
                     width: parent.width
                     text: qsTr('Add widget')
                     onClicked: {
-                        //menu.model = parser.getTags();
-                        paneStack.pop(null);
-                        paneStack.push(addWidgetPane);
+                        main.setCurrentIndex(1);
                         drawer.close();
-                        paneStack.currentItem.setActivelWidgetList(activeWidgetsModel);
+                        main.currentItem.setActivelWidgetList(activeWidgetsModel);
                     }
                 }
                 MenuSeparator {
@@ -114,33 +111,17 @@ ApplicationWindow {
         }
     }
 
-    StackView {
-        id: paneStack
+    SwipeView {
+        id: main
         anchors.fill: parent;
         anchors.topMargin: overlayHeader.height
-        initialItem: widgetPane
-        Pane {
-            id: widgetPane
-            //anchors.fill: parent;
-            padding: 0
-            WidgetsWorkspace {
-                id: widgets
-                anchors.fill: parent
-            }
-        }
-    }
-    Component {
-        id: openFilePane
         OpenFilePage {
-            id: openFilePaneRoot
-            onCloseButtonClick: paneStack.pop(null);
+            id: openFilePane
+            onCloseButtonClick: main.setCurrentIndex(2);
         }
-    }
-    Component {
-        id: addWidgetPane
         AddWidgetPage {
-            id: addWidgetPaneRoot
-            onCloseButtonClick: paneStack.pop(null);
+            id: addWidgetPane
+            onCloseButtonClick: main.setCurrentIndex(2);
             onAddPlot: {
                 var itemIndex = activeWidgetsModel.find(name);
                 if(itemIndex === -1){
@@ -155,6 +136,15 @@ ApplicationWindow {
             }
             onAddMap: {
               //  (string name, string latitude, string longitude);
+            }
+        }
+        Pane {
+            id: widgetPane
+            //anchors.fill: parent;
+            padding: 0
+            WidgetsWorkspace {
+                id: widgets
+                anchors.fill: parent
             }
         }
     }

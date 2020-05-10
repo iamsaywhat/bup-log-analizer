@@ -10,17 +10,18 @@ Item {
     signal addPlot(string name, string xname, string yname);
     signal addMap(string name, string latitude, string longitude);
 
-    function setData () {
-       plotXAxisSelector.model = parser.getTags();
-       plotYAxisSelector.model = parser.getTags();
-
-    }
     function setActivelWidgetList (list) {
         plotWidgetSelector.textRole = 'name';
         plotWidgetSelector.model = list;
     }
 
-    Component.onCompleted:  setData();
+    Connections {
+        target: parser;
+        onTagListChanged: {
+            plotXAxisSelector.model = parser.tagList();
+            plotYAxisSelector.model = parser.tagList();
+        }
+    }
 
     Pane {
         id: pane

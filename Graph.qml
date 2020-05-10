@@ -64,7 +64,7 @@ Item {
         }
     }
     MouseArea {
-        //anchors.fill: parent
+        anchors.fill: parent
         onWheel: {
             if (wheel.modifiers & Qt.ControlModifier) {
                 autoscaleMinX = autoscaleMinX + (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
@@ -80,6 +80,7 @@ Item {
                 autoscaleMinY = autoscaleMinY + (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
                 autoscaleMaxY = autoscaleMaxY - (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
             }
+            console.debug("wheel");
         }
     }
 }
