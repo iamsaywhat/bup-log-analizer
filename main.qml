@@ -125,10 +125,13 @@ ApplicationWindow {
             onAddPlot: {
                 var itemIndex = activeWidgetsModel.find(name);
                 if(itemIndex === -1){
-                    activeWidgetsModel.append({'type': 'plot', 'name': name});
-                    var newObject = Qt.createQmlObject('Graph {}', widgets);
-                    newObject.addSeries (yname , xname, yname);
-                    widgets.addWidget(newObject);
+                    var component = Qt.createComponent("Graph.qml");
+                    if (component.status === Component.Ready) {
+                        var object = component.createObject(widgets);
+                        activeWidgetsModel.append({'type': 'plot', 'name': name});
+                        object.addSeries (yname , xname, yname);
+                        widgets.addWidget(object);
+                    }
                 }
                 else {
                     widgets.itemAt(itemIndex).addSeries (yname , xname, yname);
