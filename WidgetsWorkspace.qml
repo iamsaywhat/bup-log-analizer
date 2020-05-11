@@ -8,6 +8,7 @@ Item {
     }
     function switchAt(index){
         widgets.setCurrentIndex(index);
+        console.debug(widgets.count);
     }
     function itemAt(index){
         return widgets.itemAt(index);

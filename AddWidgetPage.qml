@@ -171,7 +171,6 @@ Item {
                         var yAxixName = plotYAxisSelector.currentText;
                         addPlot(name, xAxisName, yAxixName);
                     }
-
                 }
             }
         }

@@ -86,7 +86,8 @@ ApplicationWindow {
                 visible: model.type === "map" || model.type === "plot"
                 height: ((model.type === 'map' || model.type === 'plot') ? 50 : 0)
                 onClicked: {
-                    widgets.switchAt(model.index+1);
+                    console.debug(model.index-1);
+                    widgets.switchAt(model.index-1);
                 }
             }
             ScrollIndicator.vertical: ScrollIndicator { }
@@ -136,7 +137,7 @@ ApplicationWindow {
                     }
                 }
                 else {
-                    widgets.itemAt(itemIndex).addSeries (yname , xname, yname);
+                    widgets.itemAt(itemIndex-1).addSeries (yname , xname, yname);
                 }
             }
             onAddMap: {
@@ -151,7 +152,7 @@ ApplicationWindow {
                     }
                 }
                 else {
-                    widgets.itemAt(itemIndex).createTrack(parser.getTrack(latitude, longitude, altitude));
+                    widgets.itemAt(itemIndex-1).createTrack(parser.getTrack(latitude, longitude, altitude));
                 }
             }
         }
