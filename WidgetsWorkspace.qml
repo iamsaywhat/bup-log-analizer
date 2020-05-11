@@ -12,14 +12,19 @@ Item {
     function itemAt(index){
         return widgets.itemAt(index);
     }
-
+    Label {
+        anchors.fill: parent
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        wrapMode: Text.WordWrap
+        text: "There is nothing here, but you can add widgets using the \"Add widget\" button in the left swipe menu"
+        font.pixelSize: 20
+    }
     SwipeView
     {
         id: widgets
         anchors.fill: parent;
         padding: 0
-        GpsTracker {
-        }
     }
     PageIndicator {
         id: indicator

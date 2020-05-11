@@ -35,7 +35,7 @@ bool BupLogParser::openFile(QString path){
         QStringList tagList;
         tagList << "Timestamp, sec: " << "SNS_Lat: " << "SNS_Lon: " << "SNS_Alt: " << "SNS_Vel_lat: " << "SNS_Vel_lon: " <<
                 "SNS_Vel_alt: " << "SNS_Course: " << "SNS_Heading_true: " << "SNS_Heading_mgn: " << "SNS_Pitch: " <<
-                "SNS_Roll: " << "SWS_TrueSpeed: " << "SWS_InstrumentSpeed: " << "BIML_Pos: " << "BIMR_Pos: " << "SystemState: "
+                "SNS_Roll: " << "SWS_TrueSpeed: " << "SWS_InstrumentSpeed: " << "BIML_Pos: " << "BIMR_Pos: " << "SystemState: " <<
                 "Model_Lat, deg: " << "Model_Lon, deg: " << "Model_Alt, m: " << "Model_VelocityLat, m/s: " << "Model_VelocityLon, m/s: " <<
                 "Model_VelocityAlt, m/s: " << "Model_HeadingTrue, rad: " << "Model_HeadingMgn, rad: " << "Model_Course, rad: " <<
                 "Model_Pitch, rad: " << "Model_Roll, rad: " << "MAP, m: " << "Model_BIM_CMD: " << "Model_TD_CMD: ";
@@ -43,6 +43,7 @@ bool BupLogParser::openFile(QString path){
         runParsing();
         emit fileOpen();
         emit tagListChanged();
+        qDebug() << tags;
         return true;
     }
     else

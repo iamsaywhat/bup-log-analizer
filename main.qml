@@ -115,6 +115,8 @@ ApplicationWindow {
         id: main
         anchors.fill: parent;
         anchors.topMargin: overlayHeader.height
+        interactive: false
+
         OpenFilePage {
             id: openFilePane
             onCloseButtonClick: main.setCurrentIndex(2);
@@ -138,7 +140,19 @@ ApplicationWindow {
                 }
             }
             onAddMap: {
-              //  (string name, string latitude, string longitude);
+                var itemIndex = activeWidgetsModel.find(name);
+                if(itemIndex === -1){
+                    var component = Qt.createComponent("GpsTracker.qml");
+                    if (component.status === Component.Ready) {
+                        var object = component.createObject(widgets);
+                        activeWidgetsModel.append({'type': 'map', 'name': name});
+                        object.createTrack(parser.getTrack(latitude, longitude, altitude));
+                        widgets.addWidget(object);
+                    }
+                }
+                else {
+                    widgets.itemAt(itemIndex).createTrack(parser.getTrack(latitude, longitude, altitude));
+                }
             }
         }
         Pane {
