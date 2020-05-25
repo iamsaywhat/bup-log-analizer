@@ -7,6 +7,13 @@ Item {
 
     signal buttonClick()
 
+    Connections {
+        target: parser;
+        onFileOpen: {
+            label.text = name;
+        }
+    }
+
     ToolBar {
         id: header
         anchors.fill: parent

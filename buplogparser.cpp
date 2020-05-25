@@ -30,6 +30,11 @@ QStringList BupLogParser::tagList (void) const{
     return tags;
 }
 bool BupLogParser::openFile(QString path){
+    tags.clear();
+    data.clear();
+    if(file.isOpen())
+        file.close();
+
     if(file.exists(path)){
         file.setFileName(path);    
         QStringList tagList;
@@ -41,7 +46,7 @@ bool BupLogParser::openFile(QString path){
                 "Model_Pitch, rad: " << "Model_Roll, rad: " << "MAP, m: " << "Model_BIM_CMD: " << "Model_TD_CMD: ";
         setTagList(tagList);
         runParsing();
-        emit fileOpen();
+        emit fileOpen(path);
         emit tagListChanged();
         qDebug() << tags;
         return true;

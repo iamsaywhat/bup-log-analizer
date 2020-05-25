@@ -31,7 +31,7 @@ private:
     QList<QPointF> createSeries(QString xTag, QString yTag);
 
 signals:
-    void fileOpen(void);
+    void fileOpen(QString name);
     void tagListChanged(void);
 
 public slots: 
