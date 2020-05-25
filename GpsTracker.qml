@@ -10,14 +10,26 @@ Item {
     property MapPolyline track
 
     function createTrack(path){
+        console.debug("add thact");
+        var track = Qt.createQmlObject('import QtLocation 5.13; MapPolyline {}', map);
+        track.line.width = 5;
+        track.line.color = 'green';
         track.setPath(path);
-
+        map.center = path.coordinateAt(0);
+        map.addMapItem(track);
     }
     function clearMap (){
         map.clearMapItems();
     }
-    function createTarget(position){
-
+    function createCircle(latitude, longitude, radius, opacity, color){
+        var circle = Qt.createQmlObject('import QtLocation 5.3; MapCircle {}', map)
+        circle.center = QtPositioning.coordinate(-27, 153.0)
+        circle.radius = radius;
+        circle.opacity = opacity;
+        circle.color = color;
+        circle.border.width = 2;
+        map.addMapItem(circle);
+        map.center = circle.center;
     }
 
 
@@ -37,28 +49,6 @@ Item {
         center: QtPositioning.coordinate(59.652309, 30.018348, 3048);
         //center: positionSource.position.coordinate
         zoomLevel: 14
-        property MapCircle circle
-        onCenterChanged: {
-//            console.debug(center)
-//            circle = Qt.createQmlObject('import QtLocation 5.3; MapCircle {}', map)
-//            circle.center = map.center
-//            circle.radius = 300.0
-//            circle.color = 'green'
-//            circle.border.width = 3
-//            map.addMapItem(circle)
-            createTrack(parser.getTrack("Model_Lat, deg: ", "Model_Lon, deg: ",  "Model_Alt, m: "));
-        }
-        MapPolyline {
-            id: track
-            line.width: 5
-            line.color: 'green'
-        }
-        MapCircle {
-            center: QtPositioning.coordinate(-27, 153.0)
-            radius: 300
-            opacity: 0.5
-            color: 'green'
-        }
     }
 
 }

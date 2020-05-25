@@ -9,12 +9,15 @@ Item {
     signal closeButtonClick();
     signal addPlot(string name, string xname, string yname);
     signal addMap(string name, string latitude, string longitude, string altitude);
+    signal addPoint(string name, string latitude, string longitude, var radius, var opacity, color color);
 
     function setActivelWidgetList (list) {
         plotWidgetSelector.combobox.textRole = 'name';
         plotWidgetSelector.combobox.model = list;
         mapWidgetSelector.combobox.textRole = 'name';
         mapWidgetSelector.combobox.model = list;
+        pointWidgetSelector.combobox.textRole = 'name';
+        pointWidgetSelector.combobox.model = list;
     }
 
     Connections {
@@ -114,8 +117,8 @@ Item {
                     }
                     else {
                         var name = mapWidgetSelector.combobox.editText;
-                        var latitudeName = mapLongitudeSelector.combobox.currentText;
-                        var longitudeName = mapLatitudeSelector.combobox.currentText;
+                        var latitudeName = mapLatitudeSelector.combobox.currentText;
+                        var longitudeName = mapLongitudeSelector.combobox.currentText;
                         var altitudeName = mapAltitudeSelector.combobox.currentText;
                         addMap(name, latitudeName, longitudeName, altitudeName);
                     }
@@ -224,6 +227,17 @@ Item {
                 anchors.top: pointRadiusSelector.bottom
                 width: parent.width
                 label.text: qsTr("Color:")
+                combobox.model: ListModel {
+                    ListElement { text: 'red' }
+                    ListElement { text: 'blue' }
+                    ListElement { text: 'green' }
+                    ListElement { text: 'yellow'}
+                    ListElement { text: 'cyan'}
+                    ListElement { text: 'magenta'}
+                }
+                combobox.delegate: ItemDelegate {
+                    text: model.text
+                }
             }
 
             Button {
@@ -237,13 +251,15 @@ Item {
                        && pointWidgetSelector.combobox.editable){
                         console.debug("wrong name");
                     }
-//                    else {
-//                        var name = mapWidgetSelector.combobox.editText;
-//                        var latitudeName = mapLongitudeSelector.combobox.currentText;
-//                        var longitudeName = mapLatitudeSelector.combobox.currentText;
-//                        var altitudeName = mapAltitudeSelector.combobox.currentText;
-//                        addMap(name, latitudeName, longitudeName, altitudeName);
-//                    }
+                    else {
+                        var name = pointWidgetSelector.combobox.editText;
+                        var latitudeName = pointLongitudeSelector.combobox.currentText;
+                        var longitudeName = pointLatitudeSelector.combobox.currentText;
+                        var radius = 5000;
+                        var opacity = 0.5;
+                        var color = pointColorSelector.combobox.currentText;
+                        addPoint(name, latitudeName, longitudeName, radius, opacity, color);
+                    }
                 }
             }
         }

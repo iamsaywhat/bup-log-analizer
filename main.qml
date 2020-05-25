@@ -155,6 +155,22 @@ ApplicationWindow {
                     widgets.itemAt(itemIndex-1).createTrack(parser.getTrack(latitude, longitude, altitude));
                 }
             }
+            onAddPoint:  {
+                console.debug("onAddPoint");
+                var itemIndex = activeWidgetsModel.find(name);
+                if(itemIndex === -1){
+                    var component = Qt.createComponent("GpsTracker.qml");
+                    if (component.status === Component.Ready) {
+                        var object = component.createObject(widgets);
+                        activeWidgetsModel.append({'type': 'map', 'name': name});
+                        object.createCircle(latitude, longitude, radius, opacity, color);
+                        widgets.addWidget(object);
+                    }
+                }
+                else {
+                    widgets.itemAt(itemIndex-1).createCircle(latitude, longitude, radius, opacity, color);
+                }
+            }
         }
         Pane {
             id: widgetPane
