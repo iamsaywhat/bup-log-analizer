@@ -27,7 +27,6 @@ Item {
             mapAltitudeSelector.combobox.model = parser.tagList();
         }
     }
-
     Pane {
         id: pane
         anchors.margins: 50
