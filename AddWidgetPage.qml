@@ -1,4 +1,4 @@
-import QtQuick 2.0
+﻿import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.13
 import QtQml.Models 2.13
@@ -11,10 +11,10 @@ Item {
     signal addMap(string name, string latitude, string longitude, string altitude);
 
     function setActivelWidgetList (list) {
-        plotWidgetSelector.textRole = 'name';
-        plotWidgetSelector.model = list;
-        mapWidgetSelector.textRole = 'name';
-        mapWidgetSelector.model = list;
+        plotWidgetSelector.combobox.textRole = 'name';
+        plotWidgetSelector.combobox.model = list;
+        mapWidgetSelector.combobox.textRole = 'name';
+        mapWidgetSelector.combobox.model = list;
     }
 
     Connections {
@@ -30,29 +30,29 @@ Item {
 
     Pane {
         id: pane
-        anchors.fill: parent;
         anchors.margins: 50
+        anchors.fill:  parent
 
-        Label {
-            text: qsTr("Widget type:");
-            font.pixelSize: 22
-            font.italic: true
-            anchors.top: parent.top
-            anchors.bottom: widgetSelector.top
-        }
-        ComboBox {
+        Selector {
             id: widgetSelector
+            anchors.top: parent.top
+//            anchors.left: parent.left
+//            anchors.right: parent.right
             width: parent.width
-            model: ListModel {
+
+            label.text: qsTr("Widget type:");
+            label.font.pixelSize: 18
+            label.font.italic: true
+            combobox.model: ListModel {
                 ListElement { text: "Map" }
                 ListElement { text: "Plot" }
             }
-            onAccepted: {
-                if (find(editText) === -1)
-                    model.append({text: editText})
+            combobox.onAccepted: {
+                if (combobox.find(combobox.editText) === -1)
+                    combobox.model.append({text: editText})
             }
-            onActivated: {
-                if(find(editText) === 1) {
+            combobox.onActivated: {
+                if(combobox.find(combobox.editText) === 1) {
                     plotMenu.visible = true;
                     mapMenu.visible = false;
                 }
@@ -62,16 +62,45 @@ Item {
                 }
             }
         }
+//        Selector {
+//            id: widgetSelector2
+//            anchors.top: widgetSelector.bottom
+//            width: parent.width
+//            height: widgetSelector.height
+
+//            label.text: qsTr("Widget type:");
+//            label.font.pixelSize: 18
+//            label.font.italic: true
+//            combobox.model: ListModel {
+//                ListElement { text: "Map" }
+//                ListElement { text: "Plot" }
+//            }
+//            combobox.onAccepted: {
+//                if (find(editText) === -1)
+//                    model.append({text: editText})
+//            }
+//            combobox.onActivated: {
+//                if(find(editText) === 1) {
+//                    plotMenu.visible = true;
+//                    mapMenu.visible = false;
+//                }
+//                else{
+//                    plotMenu.visible = false;
+//                    mapMenu.visible = true;
+//                }
+//            }
+//        }
         Item {
             id: mapMenu
             width: parent.width
             anchors.top: widgetSelector.bottom
-            ComboBox {
+            Selector {
                 id: mapWidgetSelector
-                anchors.top: parent.bottom
+                label.text: "mapWidgetSelector"
+                anchors.top: parent.top
                 width: parent.width
-                editable: true
-                delegate: ItemDelegate {
+                combobox.editable: true
+                combobox.delegate: ItemDelegate {
                     text: model.name
                     width: parent.width
                     visible: model.type === 'empty' || model.type === 'map'
@@ -84,20 +113,23 @@ Item {
                     }
                 }
             }
-            ComboBox {
+            Selector {
                 id: mapLatitudeSelector
                 anchors.top: mapWidgetSelector.bottom
                 width: parent.width
+                label.text: qsTr("Latitude:")
             }
-            ComboBox {
+            Selector {
                 id: mapLongitudeSelector
                 anchors.top: mapLatitudeSelector.bottom
                 width: parent.width
+                label.text: qsTr("Longitude:")
             }
-            ComboBox {
+            Selector {
                 id: mapAltitudeSelector
                 anchors.top: mapLongitudeSelector.bottom
                 width: parent.width
+                label.text: qsTr("Altitude:")
             }
 
             Button {
@@ -107,15 +139,15 @@ Item {
                 text: qsTr("Add")
                 onClicked: {
                     console.debug("clisc");
-                    if(mapWidgetSelector.editText == mapWidgetSelector.currentText
-                       && mapWidgetSelector.editable){
+                    if(mapWidgetSelector.combobox.editText == mapWidgetSelector.combobox.currentText
+                       && mapWidgetSelector.combobox.editable){
                         console.debug("wrong name");
                     }
                     else {
-                        var name = mapWidgetSelector.editText;
-                        var latitudeName = mapLongitudeSelector.currentText;
-                        var longitudeName = mapLatitudeSelector.currentText;
-                        var altitudeName = mapAltitudeSelector.currentText;
+                        var name = mapWidgetSelector.combobox.editText;
+                        var latitudeName = mapLongitudeSelector.combobox.currentText;
+                        var longitudeName = mapLatitudeSelector.combobox.currentText;
+                        var altitudeName = mapAltitudeSelector.combobox.currentText;
                         addMap(name, latitudeName, longitudeName, altitudeName);
                     }
                 }
@@ -126,12 +158,13 @@ Item {
             width: parent.width
             anchors.top: widgetSelector.bottom
             visible: false
-            ComboBox {
+            Selector {
                 id: plotWidgetSelector
                 anchors.top: parent.bottom
                 width: parent.width
-                editable: true
-                delegate: ItemDelegate {
+                label.text: "plotWidgetSelector"
+                combobox.editable: true
+                combobox.delegate: ItemDelegate {
                     text: model.name
                     width: parent.width
                     visible: model.type === 'empty' || model.type === 'plot'
@@ -144,15 +177,17 @@ Item {
                     }
                 }
             }
-            ComboBox {
+            Selector {
                 id: plotXAxisSelector
                 anchors.top: plotWidgetSelector.bottom
                 width: parent.width
+                label.text: "Select x-axis:"
             }
-            ComboBox {
+            Selector {
                 id: plotYAxisSelector
                 width: parent.width
                 anchors.top: plotXAxisSelector.bottom
+                label.text: "Select y-axis:"
             }
             Button {
                 id: addPlotButton

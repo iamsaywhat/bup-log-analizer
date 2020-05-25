@@ -7,5 +7,6 @@
         <file>WidgetsWorkspace.qml</file>
         <file>OpenFilePage.qml</file>
         <file>AddWidgetPage.qml</file>
+        <file>Selector.qml</file>
     </qresource>
 </RCC>
