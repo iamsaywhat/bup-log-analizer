@@ -20,11 +20,11 @@ Item {
     Connections {
         target: parser;
         onTagListChanged: {
-            plotXAxisSelector.model = parser.tagList();
-            plotYAxisSelector.model = parser.tagList();
-            mapLatitudeSelector.model = parser.tagList();
-            mapLongitudeSelector.model = parser.tagList();
-            mapAltitudeSelector.model = parser.tagList();
+            plotXAxisSelector.combobox.model = parser.tagList();
+            plotYAxisSelector.combobox.model = parser.tagList();
+            mapLatitudeSelector.combobox.model = parser.tagList();
+            mapLongitudeSelector.combobox.model = parser.tagList();
+            mapAltitudeSelector.combobox.model = parser.tagList();
         }
     }
 
@@ -62,41 +62,13 @@ Item {
                 }
             }
         }
-//        Selector {
-//            id: widgetSelector2
-//            anchors.top: widgetSelector.bottom
-//            width: parent.width
-//            height: widgetSelector.height
-
-//            label.text: qsTr("Widget type:");
-//            label.font.pixelSize: 18
-//            label.font.italic: true
-//            combobox.model: ListModel {
-//                ListElement { text: "Map" }
-//                ListElement { text: "Plot" }
-//            }
-//            combobox.onAccepted: {
-//                if (find(editText) === -1)
-//                    model.append({text: editText})
-//            }
-//            combobox.onActivated: {
-//                if(find(editText) === 1) {
-//                    plotMenu.visible = true;
-//                    mapMenu.visible = false;
-//                }
-//                else{
-//                    plotMenu.visible = false;
-//                    mapMenu.visible = true;
-//                }
-//            }
-//        }
         Item {
             id: mapMenu
             width: parent.width
             anchors.top: widgetSelector.bottom
             Selector {
                 id: mapWidgetSelector
-                label.text: "mapWidgetSelector"
+                label.text: "Select widget:"
                 anchors.top: parent.top
                 width: parent.width
                 combobox.editable: true
@@ -107,9 +79,9 @@ Item {
                     height: ((model.type === 'empty' || model.type === 'map') ? 50 : 0)
                     onClicked: {
                         if(model.index === 0)
-                            mapDataSelector.editable = true;
+                            mapWidgetSelector.combobox.editable = true;
                         else
-                            mapDataSelector.editable = false;
+                            mapWidgetSelector.combobox.editable = false;
                     }
                 }
             }
@@ -162,7 +134,7 @@ Item {
                 id: plotWidgetSelector
                 anchors.top: parent.bottom
                 width: parent.width
-                label.text: "plotWidgetSelector"
+                label.text: "Select widget:"
                 combobox.editable: true
                 combobox.delegate: ItemDelegate {
                     text: model.name
@@ -171,9 +143,9 @@ Item {
                     height: ((model.type === 'empty' || model.type === 'plot') ? 50 : 0)
                     onClicked: {
                         if(model.index === 0)
-                            plotWidgetSelector.editable = true;
+                            plotWidgetSelector.combobox.editable = true;
                         else
-                            plotWidgetSelector.editable = false;
+                            plotWidgetSelector.combobox.editable = false;
                     }
                 }
             }
@@ -196,14 +168,14 @@ Item {
                 text: qsTr("Add")
                 onClicked: {
 
-                    if(plotWidgetSelector.editText == plotWidgetSelector.currentText
-                       && plotWidgetSelector.editable){
+                    if(plotWidgetSelector.combobox.editText == plotWidgetSelector.combobox.currentText
+                       && plotWidgetSelector.combobox.editable){
                         console.debug("wrong name");
                     }
                     else {
-                        var name = plotWidgetSelector.editText;
-                        var xAxisName = plotXAxisSelector.currentText;
-                        var yAxixName = plotYAxisSelector.currentText;
+                        var name = plotWidgetSelector.combobox.editText;
+                        var xAxisName = plotXAxisSelector.combobox.currentText;
+                        var yAxixName = plotYAxisSelector.combobox.currentText;
                         addPlot(name, xAxisName, yAxixName);
                     }
                 }
