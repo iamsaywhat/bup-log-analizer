@@ -8,7 +8,7 @@ Item {
 
     signal closeButtonClick();
     signal addPlot(string name, string xname, string yname);
-    signal addMap(string name, string latitude, string longitude, string altitude);
+    signal addMap(string name, string latitude, string longitude, string altitude, color color);
     signal addPoint(string name, string latitude, string longitude, var radius, var opacity, color color);
 
     function setActivelWidgetList (list) {
@@ -41,9 +41,8 @@ Item {
 //            anchors.right: parent.right
             width: parent.width
 
-            label.text: qsTr("Widget type:");
+            label.text: qsTr("Object type:");
             label.font.pixelSize: 18
-            label.font.italic: true
             combobox.model: ListModel {
                 ListElement { text: "Map" }
                 ListElement { text: "Plot" }
@@ -57,15 +56,16 @@ Item {
                     combobox.model.append({text: editText})
             }
             combobox.onActivated: {
-                mapMenu.visible = ((index == 0) ? true : false);
-                plotMenu.visible = ((index == 1) ? true : false);;
-                pointMenu.visible = ((index == 2) ? true : false);
+//                mapMenu.visible = ((index == 0) ? true : false);
+//                plotMenu.visible = ((index == 1) ? true : false);
+//                pointMenu.visible = ((index == 2) ? true : false);
             }
         }
         Item {
             id: mapMenu
             width: parent.width
             anchors.top: widgetSelector.bottom
+            visible: ((widgetSelector.combobox.currentIndex === 0) ? true : false)
             Selector {
                 id: mapWidgetSelector
                 label.text: "Select widget:"
@@ -103,10 +103,27 @@ Item {
                 width: parent.width
                 label.text: qsTr("Altitude:")
             }
-
+            Selector {
+                id: mapColorSelector
+                anchors.top: mapAltitudeSelector.bottom
+                width: parent.width
+                label.text: qsTr("Color:")
+                combobox.model: ListModel {
+                    ListElement { text: 'black'}
+                    ListElement { text: 'red' }
+                    ListElement { text: 'blue' }
+                    ListElement { text: 'green' }
+                    ListElement { text: 'yellow'}
+                    ListElement { text: 'cyan'}
+                    ListElement { text: 'magenta'}
+                }
+                combobox.delegate: ItemDelegate {
+                    text: model.text
+                }
+            }
             Button {
                 id: addMapButton
-                anchors.top: mapAltitudeSelector.bottom
+                anchors.top: mapColorSelector.bottom
                 width: parent.width
                 text: qsTr("Add")
                 onClicked: {
@@ -120,7 +137,8 @@ Item {
                         var latitudeName = mapLatitudeSelector.combobox.currentText;
                         var longitudeName = mapLongitudeSelector.combobox.currentText;
                         var altitudeName = mapAltitudeSelector.combobox.currentText;
-                        addMap(name, latitudeName, longitudeName, altitudeName);
+                        var color = mapColorSelector.combobox.currentText;
+                        addMap(name, latitudeName, longitudeName, altitudeName, color);
                     }
                 }
             }
@@ -129,7 +147,7 @@ Item {
             id: plotMenu
             width: parent.width
             anchors.top: widgetSelector.bottom
-            visible: false
+            visible: ((widgetSelector.combobox.currentIndex === 1) ? true : false)
             Selector {
                 id: plotWidgetSelector
                 anchors.top: parent.bottom
@@ -167,7 +185,6 @@ Item {
                 anchors.top: plotYAxisSelector.bottom
                 text: qsTr("Add")
                 onClicked: {
-
                     if(plotWidgetSelector.combobox.editText == plotWidgetSelector.combobox.currentText
                        && plotWidgetSelector.combobox.editable){
                         console.debug("wrong name");
@@ -185,6 +202,7 @@ Item {
             id: pointMenu
             width: parent.width
             anchors.top: widgetSelector.bottom
+            visible: ((widgetSelector.combobox.currentIndex === 2) ? true : false)
             Selector {
                 id: pointWidgetSelector
                 label.text: "Select widget:"

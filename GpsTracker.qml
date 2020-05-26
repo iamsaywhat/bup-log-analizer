@@ -6,14 +6,10 @@ import QtPositioning 5.13
 
 Item {
     id: root
-
-    property MapPolyline track
-
-    function createTrack(path){
-        console.debug("add thact");
+    function createTrack(path, color){
         var track = Qt.createQmlObject('import QtLocation 5.13; MapPolyline {}', map);
         track.line.width = 5;
-        track.line.color = 'green';
+        track.line.color = color;
         track.setPath(path);
         map.center = path.coordinateAt(0);
         map.addMapItem(track);
@@ -22,7 +18,7 @@ Item {
         map.clearMapItems();
     }
     function createCircle(latitude, longitude, radius, opacity, color){
-        var circle = Qt.createQmlObject('import QtLocation 5.3; MapCircle {}', map)
+        var circle = Qt.createQmlObject('import QtLocation 5.13; MapCircle {}', map)
         circle.center = QtPositioning.coordinate(-27, 153.0)
         circle.radius = radius;
         circle.opacity = opacity;
@@ -31,8 +27,6 @@ Item {
         map.addMapItem(circle);
         map.center = circle.center;
     }
-
-
     Plugin {
          id: mapPlugin
          name: "osm"
@@ -46,8 +40,6 @@ Item {
         id: map
         anchors.fill: root
         plugin: mapPlugin
-        center: QtPositioning.coordinate(59.652309, 30.018348, 3048);
-        //center: positionSource.position.coordinate
         zoomLevel: 14
     }
 
