@@ -140,7 +140,7 @@ ApplicationWindow {
                     widgets.itemAt(itemIndex-1).addSeries (yname , xname, yname);
                 }
             }
-            onAddMap: {
+            onAddTrack: {
                 var itemIndex = activeWidgetsModel.find(name);
                 if(itemIndex === -1){
                     var component = Qt.createComponent("GpsTracker.qml");

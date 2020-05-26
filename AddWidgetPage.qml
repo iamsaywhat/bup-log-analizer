@@ -8,14 +8,14 @@ Item {
 
     signal closeButtonClick();
     signal addPlot(string name, string xname, string yname);
-    signal addMap(string name, string latitude, string longitude, string altitude, color color);
+    signal addTrack(string name, string latitude, string longitude, string altitude, color color);
     signal addPoint(string name, string latitude, string longitude, var radius, var opacity, color color);
 
     function setActivelWidgetList (list) {
         plotWidgetSelector.combobox.textRole = 'name';
         plotWidgetSelector.combobox.model = list;
-        mapWidgetSelector.combobox.textRole = 'name';
-        mapWidgetSelector.combobox.model = list;
+        trackWidgetSelector.combobox.textRole = 'name';
+        trackWidgetSelector.combobox.model = list;
         pointWidgetSelector.combobox.textRole = 'name';
         pointWidgetSelector.combobox.model = list;
     }
@@ -25,9 +25,9 @@ Item {
         onTagListChanged: {
             plotXAxisSelector.combobox.model = parser.tagList();
             plotYAxisSelector.combobox.model = parser.tagList();
-            mapLatitudeSelector.combobox.model = parser.tagList();
-            mapLongitudeSelector.combobox.model = parser.tagList();
-            mapAltitudeSelector.combobox.model = parser.tagList();
+            trackLatitudeSelector.combobox.model = parser.tagList();
+            trackLongitudeSelector.combobox.model = parser.tagList();
+            trackAltitudeSelector.combobox.model = parser.tagList();
         }
     }
     Pane {
@@ -44,7 +44,7 @@ Item {
             label.text: qsTr("Object type:");
             label.font.pixelSize: 18
             combobox.model: ListModel {
-                ListElement { text: "Map" }
+                ListElement { text: "Track" }
                 ListElement { text: "Plot" }
                 ListElement { text: "Point" }
             }
@@ -56,18 +56,18 @@ Item {
                     combobox.model.append({text: editText})
             }
             combobox.onActivated: {
-//                mapMenu.visible = ((index == 0) ? true : false);
+//                trackMenu.visible = ((index == 0) ? true : false);
 //                plotMenu.visible = ((index == 1) ? true : false);
 //                pointMenu.visible = ((index == 2) ? true : false);
             }
         }
         Item {
-            id: mapMenu
+            id: trackMenu
             width: parent.width
             anchors.top: widgetSelector.bottom
             visible: ((widgetSelector.combobox.currentIndex === 0) ? true : false)
             Selector {
-                id: mapWidgetSelector
+                id: trackWidgetSelector
                 label.text: "Select widget:"
                 anchors.top: parent.top
                 width: parent.width
@@ -79,33 +79,33 @@ Item {
                     height: ((model.type === 'empty' || model.type === 'map') ? 50 : 0)
                     onClicked: {
                         if(model.index === 0)
-                            mapWidgetSelector.combobox.editable = true;
+                            trackWidgetSelector.combobox.editable = true;
                         else
-                            mapWidgetSelector.combobox.editable = false;
+                            trackWidgetSelector.combobox.editable = false;
                     }
                 }
             }
             Selector {
-                id: mapLatitudeSelector
-                anchors.top: mapWidgetSelector.bottom
+                id: trackLatitudeSelector
+                anchors.top: trackWidgetSelector.bottom
                 width: parent.width
                 label.text: qsTr("Latitude:")
             }
             Selector {
-                id: mapLongitudeSelector
-                anchors.top: mapLatitudeSelector.bottom
+                id: trackLongitudeSelector
+                anchors.top: trackLatitudeSelector.bottom
                 width: parent.width
                 label.text: qsTr("Longitude:")
             }
             Selector {
-                id: mapAltitudeSelector
-                anchors.top: mapLongitudeSelector.bottom
+                id: trackAltitudeSelector
+                anchors.top: trackLongitudeSelector.bottom
                 width: parent.width
                 label.text: qsTr("Altitude:")
             }
             Selector {
-                id: mapColorSelector
-                anchors.top: mapAltitudeSelector.bottom
+                id: trackColorSelector
+                anchors.top: trackAltitudeSelector.bottom
                 width: parent.width
                 label.text: qsTr("Color:")
                 combobox.model: ListModel {
@@ -122,23 +122,22 @@ Item {
                 }
             }
             Button {
-                id: addMapButton
-                anchors.top: mapColorSelector.bottom
+                id: addRrackButton
+                anchors.top: trackColorSelector.bottom
                 width: parent.width
                 text: qsTr("Add")
                 onClicked: {
-                    console.debug("clisc");
-                    if(mapWidgetSelector.combobox.editText == mapWidgetSelector.combobox.currentText
-                       && mapWidgetSelector.combobox.editable){
+                    if(trackWidgetSelector.combobox.editText == trackWidgetSelector.combobox.currentText
+                       && trackWidgetSelector.combobox.editable){
                         console.debug("wrong name");
                     }
                     else {
-                        var name = mapWidgetSelector.combobox.editText;
-                        var latitudeName = mapLatitudeSelector.combobox.currentText;
-                        var longitudeName = mapLongitudeSelector.combobox.currentText;
-                        var altitudeName = mapAltitudeSelector.combobox.currentText;
-                        var color = mapColorSelector.combobox.currentText;
-                        addMap(name, latitudeName, longitudeName, altitudeName, color);
+                        var name = trackWidgetSelector.combobox.editText;
+                        var latitudeName = trackLatitudeSelector.combobox.currentText;
+                        var longitudeName = trackLongitudeSelector.combobox.currentText;
+                        var altitudeName = trackAltitudeSelector.combobox.currentText;
+                        var color = trackColorSelector.combobox.currentText;
+                        addTrack(name, latitudeName, longitudeName, altitudeName, color);
                     }
                 }
             }
