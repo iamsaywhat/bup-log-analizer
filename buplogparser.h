@@ -12,36 +12,57 @@
 class BupLogParser : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QStringList tags READ tagList WRITE setTagList NOTIFY tagListChanged)
 
 public:
     explicit BupLogParser(QObject *parent = nullptr);
     ~BupLogParser(void);
 
-
+    struct Warning {
+        uint64_t timestamp;
+        QString text;
+    };
+    struct Point {
+        uint64_t timestamp;
+        QString name;
+        QGeoCoordinate point;
+    };
+    struct Series {
+        QString name;
+        QList<uint64_t> timestamp;
+        QList<double> step;
+        QList<double> value;
+    };
 
 private:
-    QStringList tags;
-    QList<QStringList*> data;
     QFile file;
+    QList<Warning> warnings;
+    QList<Point> points;
+    QList<Series*> series;
 
-    void setTagList(QStringList&);
-    void runParsing(void);
+
+    void parseLine(QString line);
     void clear(void);
-    QList<QPointF> createSeries(QString xTag, QString yTag);
+//    QList<QPointF> createSeries(QString xTag, QString yTag);
 
 signals:
     void fileOpen(QString name);
-    void tagListChanged(void);
 
 public slots: 
     bool openFile(QString);
-    QStringList tagList (void) const;
-    QGeoPath getTrack(QString latitudeTag,
-                      QString longitudeTag,
-                      QString altitudeTag);
-    void getSeries(QtCharts::QAbstractSeries *series, QString xTag, QString yTag);
+//    QGeoPath getTrack(QString latitudeTag,
+//                      QString longitudeTag,
+//                      QString altitudeTag);
+//    void getSeries(QtCharts::QAbstractSeries *series, QString xTag, QString yTag);
+
+    QStringList getWarningsList(void);
+    QStringList getPointsList(void);
+    QStringList getSeriesList(void);
 
 };
+
+Q_DECLARE_METATYPE(BupLogParser::Warning)
+Q_DECLARE_METATYPE(BupLogParser::Point)
+Q_DECLARE_METATYPE(BupLogParser::Series)
+
 
 #endif // BUPLOGPARSER_H
