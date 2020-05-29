@@ -43,6 +43,7 @@ bool BupLogParser::openFile(QString path){
     for(int i = 0; i < series.count(); i++)
         qDebug() << series.at(i)->name << series.at(i)->value << series.at(i)->step;
 
+    fileOpen(path);
     return status;
 }
 void BupLogParser::parseLine(QString line){
@@ -81,52 +82,87 @@ void BupLogParser::parseLine(QString line){
         }
     }
 }
-//QGeoPath BupLogParser::getTrack(QString latitudeTag,
-//                                QString longitudeTag,
-//                                QString altitudeTag)
-//{
-//    QList<QGeoCoordinate> track;
-//    int latitudeIndex = tags.indexOf(latitudeTag);
-//    int longitudeIndex = tags.indexOf(longitudeTag);
-//    int altitudeIndex = tags.indexOf(altitudeTag);
+QGeoPath BupLogParser::getTrack(QString latitudeTag,
+                                QString longitudeTag,
+                                QString altitudeTag)
+{
+    QList<QGeoCoordinate> track;
 
-//    if(latitudeIndex == -1 || longitudeIndex == -1 || altitudeIndex == -1)
-//        return track;
+    Series* latitude = nullptr;
+    Series* longitude = nullptr;
+    Series* altitude = nullptr;
 
-//    for(int i = 0; i < data.at(latitudeIndex)->size(); i++){
-//        double latitude = data.at(latitudeIndex)->at(i).toDouble();
-//        double longitude = data.at(longitudeIndex)->at(i).toDouble();
-//        double altitude = data.at(altitudeIndex)->at(i).toDouble();
-//        track.append(QGeoCoordinate(latitude, longitude, altitude));
-//    }
-////    for(int i = 0; i < track.count(); i++)
-////        qDebug() << track.at(i);
-//    return QGeoPath(track);
-//}
-//QList<QPointF> BupLogParser::createSeries(QString xTag, QString yTag){
-//     QList<QPointF> series;
-//     int xIndex = tags.indexOf(xTag);
-//     int yIndex = tags.indexOf(yTag);
+    for (int i = 0; i < series.count(); i++) {
+        if(series.at(i)->name == latitudeTag)
+            latitude = series.at(i);
+    }
+    for (int i = 0; i < series.count(); i++) {
+        if (series.at(i)->name == longitudeTag)
+            longitude = series.at(i);
+    }
+    for (int i = 0; i < series.count(); i++) {
+        if (series.at(i)->name == altitudeTag)
+            altitude = series.at(i);
+    }
 
-//     if(xIndex == -1 || yIndex == -1)
-//         return series;
+    if (latitude == nullptr || longitude == nullptr || altitude == nullptr)
+        return track;
 
-//     for(int i = 0; i < data.at(xIndex)->size(); i++){
-//         double x = data.at(xIndex)->at(i).toDouble();
-//         double y = data.at(yIndex)->at(i).toDouble();
-//         series.append(QPointF(x,y));
-//     }
-//     return series;
-//}
-//void BupLogParser::getSeries(QtCharts::QAbstractSeries *series, QString xTag, QString yTag){
-//    QtCharts::QXYSeries *xySeries = static_cast<QtCharts::QXYSeries *>(series);
-//    xySeries->clear();
-//    xySeries->append(createSeries(xTag, yTag));
-////    for(int i = 0; i < xySeries->count(); i++)
-////        qDebug() << xySeries->at(i);
-//}
+    for (int i = 0; i < latitude->step.count() &&
+                    i < longitude->step.count() &&
+                    i < altitude->step.count(); i++) {
+        int latitudeIndex = latitude->step.indexOf(i);
+        int longitudeIndex = longitude->step.indexOf(i);
+        int altitudeIndex = altitude->step.indexOf(i);
+        if (latitudeIndex != -1 && longitudeIndex != -1 && altitudeIndex != -1) {
+            double latitudeStep = latitude->value.at(latitudeIndex);
+            double longitudeStep = longitude->value.at(longitudeIndex);
+            double altitudeStep = altitude->value.at(altitudeIndex);
+            track.append(QGeoCoordinate(latitudeStep, longitudeStep, altitudeStep));
+        }
+    }
+    for(int i = 0; i < track.count(); i++)
+        qDebug() << track.at(i);
+    return QGeoPath(track);
+}
+QList<QPointF> BupLogParser::createSeries(QString xTag, QString yTag){
+     QList<QPointF> lineSeries;
+     Series* xData = nullptr;
+     Series* yData = nullptr;
+
+     for (int i = 0; i < series.count(); i++) {
+         if(series.at(i)->name == xTag)
+             xData = series.at(i);
+     }
+     for (int i = 0; i < series.count(); i++) {
+         if(series.at(i)->name == yTag)
+             yData = series.at(i);
+     }
+     if (xData == nullptr || yData == nullptr)
+         return lineSeries;
+
+     for (int i = 0; i < xData->step.count() &&
+                     i < yData->step.count(); i++) {
+         int xIndex = xData->step.indexOf(i);
+         int yIndex = yData->step.indexOf(i);
+         if (xIndex != -1 && yIndex != -1) {
+             double xStep = xData->value.at(xIndex);
+             double yStep = yData->value.at(yIndex);
+             lineSeries.append(QPointF(xStep, yStep));
+         }
+     }
+    return lineSeries;
+}
+void BupLogParser::getSeries(QtCharts::QAbstractSeries *series, QString xTag, QString yTag){
+    QtCharts::QXYSeries *xySeries = static_cast<QtCharts::QXYSeries *>(series);
+    xySeries->clear();
+    xySeries->append(createSeries(xTag, yTag));
+//    for(int i = 0; i < xySeries->count(); i++)
+//        qDebug() << xySeries->at(i);
+}
 QStringList BupLogParser::getWarningsList(void){
-
+    QStringList l;
+    return l;
 }
 QStringList BupLogParser::getPointsList(void){
     QStringList names;

@@ -22,12 +22,12 @@ Item {
 
     Connections {
         target: parser;
-        onTagListChanged: {
-            plotXAxisSelector.combobox.model = parser.tagList();
-            plotYAxisSelector.combobox.model = parser.tagList();
-            trackLatitudeSelector.combobox.model = parser.tagList();
-            trackLongitudeSelector.combobox.model = parser.tagList();
-            trackAltitudeSelector.combobox.model = parser.tagList();
+        onFileOpen: {
+            plotXAxisSelector.combobox.model = parser.getSeriesList();
+            plotYAxisSelector.combobox.model = parser.getSeriesList();
+            trackLatitudeSelector.combobox.model = parser.getSeriesList();
+            trackLongitudeSelector.combobox.model = parser.getSeriesList();
+            trackAltitudeSelector.combobox.model = parser.getSeriesList();
         }
     }
     Pane {

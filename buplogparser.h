@@ -42,17 +42,15 @@ private:
 
     void parseLine(QString line);
     void clear(void);
-//    QList<QPointF> createSeries(QString xTag, QString yTag);
+    QList<QPointF> createSeries(QString xTag, QString yTag);
 
 signals:
     void fileOpen(QString name);
 
 public slots: 
     bool openFile(QString);
-//    QGeoPath getTrack(QString latitudeTag,
-//                      QString longitudeTag,
-//                      QString altitudeTag);
-//    void getSeries(QtCharts::QAbstractSeries *series, QString xTag, QString yTag);
+    QGeoPath getTrack(QString latitudeTag, QString longitudeTag, QString altitudeTag);
+    void getSeries(QtCharts::QAbstractSeries *series, QString xTag, QString yTag);
 
     QStringList getWarningsList(void);
     QStringList getPointsList(void);
