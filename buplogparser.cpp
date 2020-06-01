@@ -18,6 +18,7 @@ void BupLogParser::clear(void){
     points.clear();
     for(int i = 0; i < series.count(); i++)
         delete series.at(i);
+    series.clear();
 }
 bool BupLogParser::openFile(QString path){     
     bool status = false;
@@ -172,7 +173,7 @@ QStringList BupLogParser::getPointsList(void){
 }
 QStringList BupLogParser::getSeriesList(void){
     QStringList names;
-    for(int i = 0; i < points.count(); i++)
+    for(int i = 0; i < series.count(); i++)
         names.append(series.at(i)->name);
     return names;
 }
