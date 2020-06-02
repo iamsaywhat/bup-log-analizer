@@ -102,9 +102,7 @@ void BupLogParser::parseLine(QString line){
         track.append(data);
     }
 }
-QGeoPath BupLogParser::getTrack(QString latitudeTag,
-                                QString longitudeTag,
-                                QString altitudeTag)
+QGeoPath BupLogParser::getTrack(void)
 {
     QGeoPath geoPath;
     geoPath.setWidth(5);

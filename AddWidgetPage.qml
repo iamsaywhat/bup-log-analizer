@@ -8,7 +8,7 @@ Item {
 
     signal closeButtonClick();
     signal addPlot(string name, string xname, string yname);
-    signal addTrack(string name, string latitude, string longitude, string altitude, color color);
+    signal addTrack(string name, color color);
     signal addPoint(string name, string latitude, string longitude, var radius, var opacity, color color);
 
     function setActivelWidgetList (list) {
@@ -25,9 +25,6 @@ Item {
         onFileOpen: {
             plotXAxisSelector.combobox.model = parser.getSeriesList();
             plotYAxisSelector.combobox.model = parser.getSeriesList();
-            trackLatitudeSelector.combobox.model = parser.getSeriesList();
-            trackLongitudeSelector.combobox.model = parser.getSeriesList();
-            trackAltitudeSelector.combobox.model = parser.getSeriesList();
         }
     }
     Pane {
@@ -85,27 +82,27 @@ Item {
                     }
                 }
             }
-            Selector {
-                id: trackLatitudeSelector
-                anchors.top: trackWidgetSelector.bottom
-                width: parent.width
-                label.text: qsTr("Latitude:")
-            }
-            Selector {
-                id: trackLongitudeSelector
-                anchors.top: trackLatitudeSelector.bottom
-                width: parent.width
-                label.text: qsTr("Longitude:")
-            }
-            Selector {
-                id: trackAltitudeSelector
-                anchors.top: trackLongitudeSelector.bottom
-                width: parent.width
-                label.text: qsTr("Altitude:")
-            }
+//            Selector {
+//                id: trackLatitudeSelector
+//                anchors.top: trackWidgetSelector.bottom
+//                width: parent.width
+//                label.text: qsTr("Latitude:")
+//            }
+//            Selector {
+//                id: trackLongitudeSelector
+//                anchors.top: trackLatitudeSelector.bottom
+//                width: parent.width
+//                label.text: qsTr("Longitude:")
+//            }
+//            Selector {
+//                id: trackAltitudeSelector
+//                anchors.top: trackLongitudeSelector.bottom
+//                width: parent.width
+//                label.text: qsTr("Altitude:")
+//            }
             Selector {
                 id: trackColorSelector
-                anchors.top: trackAltitudeSelector.bottom
+                anchors.top: trackWidgetSelector.bottom
                 width: parent.width
                 label.text: qsTr("Color:")
                 combobox.model: ListModel {
@@ -133,11 +130,8 @@ Item {
                     }
                     else {
                         var name = trackWidgetSelector.combobox.editText;
-                        var latitudeName = trackLatitudeSelector.combobox.currentText;
-                        var longitudeName = trackLongitudeSelector.combobox.currentText;
-                        var altitudeName = trackAltitudeSelector.combobox.currentText;
                         var color = trackColorSelector.combobox.currentText;
-                        addTrack(name, latitudeName, longitudeName, altitudeName, color);
+                        addTrack(name, color);
                     }
                 }
             }

@@ -147,12 +147,12 @@ ApplicationWindow {
                     if (component.status === Component.Ready) {
                         var object = component.createObject(widgets);
                         activeWidgetsModel.append({'type': 'map', 'name': name});
-                        object.createTrack(parser.getTrack(latitude, longitude, altitude), color);
+                        object.createTrack(parser.getTrack(), color);
                         widgets.addWidget(object);
                     }
                 }
                 else {
-                    widgets.itemAt(itemIndex-1).createTrack(parser.getTrack(latitude, longitude, altitude), color);
+                    widgets.itemAt(itemIndex-1).createTrack(parser.getTrack(), color);
                 }
             }
             onAddPoint:  {

@@ -55,7 +55,7 @@ signals:
 
 public slots: 
     bool openFile(QString);
-    QGeoPath getTrack(QString latitudeTag, QString longitudeTag, QString altitudeTag);
+    QGeoPath getTrack(void);
     void getSeries(QtCharts::QAbstractSeries *series, QString xTag, QString yTag);
 
     QStringList getWarningsList(void);
