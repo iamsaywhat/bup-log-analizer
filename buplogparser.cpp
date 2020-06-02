@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 
 
 BupLogParser::BupLogParser(QObject *parent) : QObject(parent){
@@ -19,6 +20,7 @@ void BupLogParser::clear(void){
     for(int i = 0; i < series.count(); i++)
         delete series.at(i);
     series.clear();
+    track.clear();
 }
 bool BupLogParser::openFile(QString path){     
     bool status = false;
@@ -43,89 +45,74 @@ bool BupLogParser::openFile(QString path){
      qDebug() << "Series:";
     for(int i = 0; i < series.count(); i++)
         qDebug() << series.at(i)->name << series.at(i)->value << series.at(i)->step;
+    for(int i = 0; i < track.count(); i++)
+        qDebug() << track.at(i).timestamp << track.at(i).coordinate;
 
     fileOpen(path);
     return status;
 }
 void BupLogParser::parseLine(QString line){
     QJsonObject object = QJsonDocument::fromJson(line.toLatin1()).object();
-    if(!object.isEmpty() &&  object.keys().contains("type")){
-        QJsonValue type = object.value("type");
-        if(type == "warning"){
-            Warning data;
-            data.timestamp = object.value("systime").toInt();
-            data.text = object.value("text").toString();
-            warnings.append(data);
+    if (object.keys().contains("warning")) {
+        QJsonValue timestamp = object.value("time");
+        QJsonArray values = object.value("warning").toArray();
+        Warning data;
+        data.timestamp = timestamp.toInt();
+        data.text = values.at(0).toString();
+        warnings.append(data);
+    }
+    else if (object.keys().contains("point")) {
+        QJsonValue timestamp = object.value("time");
+        QJsonArray values = object.value("point").toArray();
+        Point data;
+        data.timestamp = timestamp.toInt();
+        data.name = values.at(0).toString();
+        data.point.setLatitude(values.at(1).toDouble());
+        data.point.setLongitude(values.at(2).toDouble());
+        data.point.setAltitude(values.at(3).toDouble());
+        points.append(data);
+    }
+    else if (object.keys().contains("serial")) {
+        QJsonValue timestamp = object.value("time");
+        QJsonArray values = object.value("serial").toArray();
+        QString name = values.at(0).toString();
+        int index;
+        for( index = 0; index < series.count(); index++) {
+            if (series.at(index)->name == name)
+                break;
         }
-        else if(type == "point"){
-            Point data;
-            data.name = object.value("name").toString();
-            data.timestamp = object.value("systime").toInt();
-            data.point.setLatitude(object.value("lat").toDouble());
-            data.point.setLongitude(object.value("lon").toDouble());
-            data.point.setAltitude(object.value("alt").toDouble());
-            points.append(data);
+        if (index == series.count()) {
+            Series *data = new Series;
+            data->name = name;
+            series.append(data);
         }
-        else if(type == "serial"){
-            int index;
-            for(index = 0; index < series.count(); index++){
-                if(series.at(index)->name == object.value("name").toString())
-                    break;
-            }
-            if(index == series.count()){
-                Series *data = new Series;
-                data->name = object.value("name").toString();
-                series.append(data);
-            }
-            series.at(index)->timestamp.append(object.value("systime").toInt());
-            series.at(index)->step.append(object.value("step").toDouble());
-            series.at(index)->value.append(object.value("value").toDouble());
-        }
+        series.at(index)->timestamp.append(timestamp.toInt());
+        series.at(index)->step.append(values.at(1).toDouble());
+        series.at(index)->value.append(values.at(2).toDouble());
+    }
+    else if (object.keys().contains("track")) {
+        QJsonValue timestamp = object.value("time");
+        QJsonArray values = object.value("track").toArray();
+        GeoTrack data;
+        data.timestamp = timestamp.toInt();
+        data.step = values.at(0).toDouble();
+        data.coordinate.setLatitude(values.at(1).toDouble());
+        data.coordinate.setLongitude(values.at(2).toDouble());
+        data.coordinate.setAltitude(values.at(3).toDouble());
+        track.append(data);
     }
 }
 QGeoPath BupLogParser::getTrack(QString latitudeTag,
                                 QString longitudeTag,
                                 QString altitudeTag)
 {
-    QList<QGeoCoordinate> track;
-
-    Series* latitude = nullptr;
-    Series* longitude = nullptr;
-    Series* altitude = nullptr;
-
-    for (int i = 0; i < series.count(); i++) {
-        if(series.at(i)->name == latitudeTag)
-            latitude = series.at(i);
-    }
-    for (int i = 0; i < series.count(); i++) {
-        if (series.at(i)->name == longitudeTag)
-            longitude = series.at(i);
-    }
-    for (int i = 0; i < series.count(); i++) {
-        if (series.at(i)->name == altitudeTag)
-            altitude = series.at(i);
-    }
-
-    if (latitude == nullptr || longitude == nullptr || altitude == nullptr)
-        return track;
-
-    for (int i = 0; i < latitude->step.count() &&
-                    i < longitude->step.count() &&
-                    i < altitude->step.count(); i++) {
-        int latitudeIndex = latitude->step.indexOf(i);
-        int longitudeIndex = longitude->step.indexOf(i);
-        int altitudeIndex = altitude->step.indexOf(i);
-        if (latitudeIndex != -1 && longitudeIndex != -1 && altitudeIndex != -1) {
-            double latitudeStep = latitude->value.at(latitudeIndex);
-            double longitudeStep = longitude->value.at(longitudeIndex);
-            double altitudeStep = altitude->value.at(altitudeIndex);
-            track.append(QGeoCoordinate(latitudeStep, longitudeStep, altitudeStep));
-        }
-    }
-    for(int i = 0; i < track.count(); i++)
-        qDebug() << track.at(i);
-    return QGeoPath(track);
+    QGeoPath geoPath;
+    geoPath.setWidth(5);
+    for (int i = 0; i < track.count(); i++)
+        geoPath.addCoordinate(track.at(i).coordinate);
+    return geoPath;
 }
+
 QList<QPointF> BupLogParser::createSeries(QString xTag, QString yTag){
      QList<QPointF> lineSeries;
      Series* xData = nullptr;

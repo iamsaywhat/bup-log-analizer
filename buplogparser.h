@@ -1,4 +1,4 @@
-#ifndef BUPLOGPARSER_H
+﻿#ifndef BUPLOGPARSER_H
 #define BUPLOGPARSER_H
 
 #include <QObject>
@@ -32,12 +32,18 @@ public:
         QList<double> step;
         QList<double> value;
     };
+    struct GeoTrack {
+        uint64_t timestamp;
+        double step;
+        QGeoCoordinate coordinate;
+    };
 
 private:
     QFile file;
     QList<Warning> warnings;
     QList<Point> points;
     QList<Series*> series;
+    QList<GeoTrack> track;
 
 
     void parseLine(QString line);
