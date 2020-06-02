@@ -35,20 +35,7 @@ bool BupLogParser::openFile(QString path){
     }
     if(file.isOpen())
         file.close();
-
-    qDebug() << "Warnings:";
-    for(int i = 0; i < warnings.count(); i++)
-        qDebug() << warnings.at(i).timestamp << warnings.at(i).text;
-    qDebug() << "Points:";
-    for(int i = 0; i < points.count(); i++)
-        qDebug() << points.at(i).timestamp << points.at(i).name << points.at(i).point;
-     qDebug() << "Series:";
-    for(int i = 0; i < series.count(); i++)
-        qDebug() << series.at(i)->name << series.at(i)->value << series.at(i)->step;
-    for(int i = 0; i < track.count(); i++)
-        qDebug() << track.at(i).timestamp << track.at(i).coordinate;
-
-    fileOpen(path);
+    emit fileOpen(path);
     return status;
 }
 void BupLogParser::parseLine(QString line){
@@ -132,10 +119,8 @@ QList<QPointF> BupLogParser::createSeries(QString xTag, QString yTag){
 }
 void BupLogParser::getSeries(QtCharts::QAbstractSeries *series, QString xTag, QString yTag){
     QtCharts::QXYSeries *xySeries = static_cast<QtCharts::QXYSeries *>(series);
-    xySeries->clear();
+    xySeries->clear();    
     xySeries->append(createSeries(xTag, yTag));
-//    for(int i = 0; i < xySeries->count(); i++)
-//        qDebug() << xySeries->at(i);
 }
 
 QStringList BupLogParser::getWarningsList(void){
