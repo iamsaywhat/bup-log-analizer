@@ -163,12 +163,12 @@ ApplicationWindow {
                     if (component.status === Component.Ready) {
                         var object = component.createObject(widgets);
                         activeWidgetsModel.append({'type': 'map', 'name': name});
-                        object.createCircle(latitude, longitude, radius, opacity, color);
+                        object.createCircle(parser.getPoint(point), radius, opacity, color);
                         widgets.addWidget(object);
                     }
                 }
                 else {
-                    widgets.itemAt(itemIndex-1).createCircle(latitude, longitude, radius, opacity, color);
+                    widgets.itemAt(itemIndex-1).createCircle(parser.getPoint(point), radius, opacity, color);
                 }
             }
         }

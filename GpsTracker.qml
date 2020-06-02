@@ -17,9 +17,9 @@ Item {
     function clearMap (){
         map.clearMapItems();
     }
-    function createCircle(latitude, longitude, radius, opacity, color){
+    function createCircle(coordinate, radius, opacity, color){
         var circle = Qt.createQmlObject('import QtLocation 5.13; MapCircle {}', map)
-        circle.center = QtPositioning.coordinate(-27, 153.0)
+        circle.center = coordinate;
         circle.radius = radius;
         circle.opacity = opacity;
         circle.color = color;

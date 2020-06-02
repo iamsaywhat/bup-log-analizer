@@ -102,15 +102,6 @@ void BupLogParser::parseLine(QString line){
         track.append(data);
     }
 }
-QGeoPath BupLogParser::getTrack(void)
-{
-    QGeoPath geoPath;
-    geoPath.setWidth(5);
-    for (int i = 0; i < track.count(); i++)
-        geoPath.addCoordinate(track.at(i).coordinate);
-    return geoPath;
-}
-
 QList<QPointF> BupLogParser::createSeries(QString xTag, QString yTag){
      QList<QPointF> lineSeries;
      Series* xData = nullptr;
@@ -146,6 +137,7 @@ void BupLogParser::getSeries(QtCharts::QAbstractSeries *series, QString xTag, QS
 //    for(int i = 0; i < xySeries->count(); i++)
 //        qDebug() << xySeries->at(i);
 }
+
 QStringList BupLogParser::getWarningsList(void){
     QStringList l;
     return l;
@@ -156,9 +148,29 @@ QStringList BupLogParser::getPointsList(void){
         names.append(points.at(i).name);
     return names;
 }
+QGeoCoordinate BupLogParser::getPoint(QString name) {
+    int index = 0;
+    for (int index = 0; index < points.count(); index++) {
+        if (points.at(index).name == name)
+            break;
+    }
+    if (index == points.count())
+        return QGeoCoordinate();
+    else
+        return points.at(index).point;
+
+}
 QStringList BupLogParser::getSeriesList(void){
     QStringList names;
     for(int i = 0; i < series.count(); i++)
         names.append(series.at(i)->name);
     return names;
+}
+QGeoPath BupLogParser::getTrack(void)
+{
+    QGeoPath geoPath;
+    geoPath.setWidth(5);
+    for (int i = 0; i < track.count(); i++)
+        geoPath.addCoordinate(track.at(i).coordinate);
+    return geoPath;
 }

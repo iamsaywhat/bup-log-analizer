@@ -57,6 +57,7 @@ public slots:
     bool openFile(QString);
     QGeoPath getTrack(void);
     void getSeries(QtCharts::QAbstractSeries *series, QString xTag, QString yTag);
+    QGeoCoordinate getPoint(QString name);
 
     QStringList getWarningsList(void);
     QStringList getPointsList(void);

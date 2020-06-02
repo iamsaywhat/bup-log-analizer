@@ -9,7 +9,7 @@ Item {
     signal closeButtonClick();
     signal addPlot(string name, string xname, string yname);
     signal addTrack(string name, color color);
-    signal addPoint(string name, string latitude, string longitude, var radius, var opacity, color color);
+    signal addPoint(string name, string point, var radius, var opacity, color color);
 
     function setActivelWidgetList (list) {
         plotWidgetSelector.combobox.textRole = 'name';
@@ -25,6 +25,7 @@ Item {
         onFileOpen: {
             plotXAxisSelector.combobox.model = parser.getSeriesList();
             plotYAxisSelector.combobox.model = parser.getSeriesList();
+            pointNameSelector.combobox.model = parser.getPointsList();
         }
     }
     Pane {
@@ -82,24 +83,6 @@ Item {
                     }
                 }
             }
-//            Selector {
-//                id: trackLatitudeSelector
-//                anchors.top: trackWidgetSelector.bottom
-//                width: parent.width
-//                label.text: qsTr("Latitude:")
-//            }
-//            Selector {
-//                id: trackLongitudeSelector
-//                anchors.top: trackLatitudeSelector.bottom
-//                width: parent.width
-//                label.text: qsTr("Longitude:")
-//            }
-//            Selector {
-//                id: trackAltitudeSelector
-//                anchors.top: trackLongitudeSelector.bottom
-//                width: parent.width
-//                label.text: qsTr("Altitude:")
-//            }
             Selector {
                 id: trackColorSelector
                 anchors.top: trackWidgetSelector.bottom
@@ -216,22 +199,31 @@ Item {
                 }
             }
             Selector {
-                id: pointLatitudeSelector
+                id: pointNameSelector
                 anchors.top: pointWidgetSelector.bottom
                 width: parent.width
-                label.text: qsTr("Latitude:")
-            }
-            Selector {
-                id: pointLongitudeSelector
-                anchors.top: pointLatitudeSelector.bottom
-                width: parent.width
-                label.text: qsTr("Longitude:")
+                label.text: qsTr("Point name:")
             }
             Selector {
                 id: pointRadiusSelector
-                anchors.top: pointLongitudeSelector.bottom
+                anchors.top: pointNameSelector.bottom
                 width: parent.width
                 label.text: qsTr("Radius:")
+                combobox.model: ListModel {
+                    ListElement { text: '50'}
+                    ListElement { text: '100'}
+                    ListElement { text: '150'}
+                    ListElement { text: '200'}
+                    ListElement { text: '250'}
+                    ListElement { text: '300'}
+                    ListElement { text: '350'}
+                    ListElement { text: '400'}
+                }
+                combobox.editable: true
+                combobox.validator: IntValidator {
+                        top: 5000
+                        bottom: 0
+                    }
             }
             Selector {
                 id: pointColorSelector
@@ -264,12 +256,11 @@ Item {
                     }
                     else {
                         var name = pointWidgetSelector.combobox.editText;
-                        var latitudeName = pointLongitudeSelector.combobox.currentText;
-                        var longitudeName = pointLatitudeSelector.combobox.currentText;
-                        var radius = 5000;
+                        var point = pointNameSelector.combobox.currentText;
+                        var radius = pointRadiusSelector.combobox.editText;
                         var opacity = 0.5;
                         var color = pointColorSelector.combobox.currentText;
-                        addPoint(name, latitudeName, longitudeName, radius, opacity, color);
+                        addPoint(name, point, radius, opacity, color);
                     }
                 }
             }
