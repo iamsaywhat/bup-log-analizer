@@ -42,5 +42,47 @@ Item {
         plugin: mapPlugin
         zoomLevel: 14
     }
+    Item {
+        id: instruments
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 10
+        width: 40
+        height: width*2
+//            Item {
+//                id: zoom
+            Button {
+                id: zoomIn
+                width: parent.width
+                height: width
+                anchors.top: parent.top
+                onClicked: {
+                    map.zoomLevel = map.zoomLevel + 1
+                }
+                Image {
+                    id: zoomInIcon
+                    source: "qrc:/icons/zoom_in.png"
+                    anchors.fill: parent
+                    anchors.margins: 5
+
+                }
+            }
+            Button {
+                id: zoomOut
+                width: parent.width
+                height: width
+                anchors.top: zoomIn.bottom
+                onClicked: {
+                    map.zoomLevel = map.zoomLevel - 1
+                }
+                Image {
+                    id: zoomOutIcon
+                    source: "qrc:/icons/zoom_out.png"
+                    anchors.fill: parent
+                    anchors.margins: 5
+                }
+            }
+//            }
+    }
 
 }

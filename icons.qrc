@@ -8,5 +8,7 @@
         <file>icons/file.png</file>
         <file>icons/swipe_to_left.png</file>
         <file>icons/swipe_to_right.png</file>
+        <file>icons/zoom_in.png</file>
+        <file>icons/zoom_out.png</file>
     </qresource>
 </RCC>
