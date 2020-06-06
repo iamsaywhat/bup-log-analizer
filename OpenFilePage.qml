@@ -1,4 +1,4 @@
-import QtQuick 2.12
+﻿import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.13
 
@@ -28,16 +28,21 @@ Item {
                 }
                 RowLayout {
                     anchors.fill: parent
-                    spacing: 6
+                    spacing: 10
+                    anchors.margins: 5
+
                     Image{
                         id: icon
+
+                        fillMode: Image.PreserveAspectFit
+                        Layout.fillHeight: true
                         Component.onCompleted: {
                             if(dir)
-                                source = "qrc:/icons/folder.png";
+                                source = "qrc:/icons/to_folder.png";
                             else if(dir_up)
-                                source = "qrc:/icons/return_arrow.png";
+                                source = "qrc:/icons/out_folder.png";
                             else if(drive)
-                                source = "qrc:/icons/drive.png";
+                                source = "qrc:/icons/drives.png";
                             else
                                 source = "qrc:/icons/file.png";
                         }
@@ -63,7 +68,10 @@ Item {
             Image {
                 id: closeButtonIcon
                 anchors.fill: parent
-                source: "qrc:/icons/stop.png"
+                anchors.margins: 5
+                source: "qrc:/icons/close.png"
+                fillMode: Image.PreserveAspectFit
+
             }
         }
     }

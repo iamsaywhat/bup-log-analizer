@@ -24,6 +24,12 @@ Item {
             anchors.bottom: parent.bottom
             width: height
             onClicked: buttonClick();
+            Image {
+                id: menuIcon
+                anchors.fill: parent
+                anchors.margins: 5
+                source: "qrc:/icons/menu.png"
+            }
         }
         Label {
             id: label

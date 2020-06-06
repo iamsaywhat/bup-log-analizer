@@ -278,7 +278,9 @@ Item {
         Image {
             id: closeButtonIcon
             anchors.fill: parent
-            source: "qrc:/icons/stop.png"
+            anchors.margins: 5
+            source: "qrc:/icons/close.png"
+            fillMode: Image.PreserveAspectFit
         }
     }
 }

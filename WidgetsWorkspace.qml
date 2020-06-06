@@ -36,4 +36,41 @@ Item {
         anchors.bottom: widgets.bottom
         anchors.horizontalCenter: parent.horizontalCenter
     }
+    Button {
+        id: swipeToLeft
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        width: 20
+        height: 50
+        visible: ((widgets.count > 1) ? true : false)
+        Image {
+            source: "qrc:/icons/swipe_to_left.png"
+            anchors.fill: parent
+        }
+        onClicked: {
+            if(widgets.currentIndex > 0)
+                widgets.setCurrentIndex(widgets.currentIndex - 1);
+            else
+                widgets.setCurrentIndex(widgets.count - 1);
+        }
+    }
+    Button {
+        id: swipetoRight
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        width: 20
+        height: 50
+        visible: ((widgets.count > 1) ? true : false)
+        Image {
+            source: "qrc:/icons/swipe_to_right.png"
+            anchors.fill: parent
+        }
+        onClicked: {
+            if(widgets.currentIndex < widgets.count - 1)
+                widgets.setCurrentIndex(widgets.currentIndex + 1);
+            else
+                widgets.setCurrentIndex(0);
+        }
+
+    }
 }
