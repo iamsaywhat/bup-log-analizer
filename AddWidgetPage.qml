@@ -30,8 +30,9 @@ Item {
     }
     Pane {
         id: pane
-        anchors.margins: 50
-        anchors.fill:  parent
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: Math.min(parent.width, 500)
+        height: parent.height
         Selector {
             id: widgetSelector
             anchors.top: parent.top
