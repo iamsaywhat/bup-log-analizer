@@ -39,24 +39,32 @@ Item {
     Button {
         id: swipeToLeft
         anchors.left: parent.left
+        anchors.leftMargin: 10
         anchors.verticalCenter: parent.verticalCenter
         width: 20
         height: 50
         visible: ((widgets.count > 1) ? true : false)
-        Image {
-            source: "qrc:/icons/swipe_to_left.png"
-            anchors.fill: parent
-        }
         onClicked: {
             if(widgets.currentIndex > 0)
                 widgets.setCurrentIndex(widgets.currentIndex - 1);
             else
                 widgets.setCurrentIndex(widgets.count - 1);
         }
+        background: Rectangle {
+            color: parent.pressed ? "#d6d6d6" : 'white'
+            radius: 20
+            opacity: parent.pressed ? 0.8 : 0
+        }
+        Image {
+            source: "qrc:/icons/swipe_to_left.png"
+            anchors.fill: parent
+            opacity: !parent.hovered ? 0.5 : 0.8
+        }
     }
     Button {
         id: swipetoRight
         anchors.right: parent.right
+        anchors.rightMargin: 10
         anchors.verticalCenter: parent.verticalCenter
         width: 20
         height: 50

@@ -3,6 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 import QtCharts 2.12
 import QtQml.Models 2.13
+import QtQuick.Layouts 1.13
 
 ApplicationWindow {
     id: window
@@ -81,13 +82,41 @@ ApplicationWindow {
             model: activeWidgetsModel
 
             delegate: ItemDelegate {
-                text: model.name
                 width: parent.width
                 visible: model.type === "map" || model.type === "plot"
                 height: ((model.type === 'map' || model.type === 'plot') ? 50 : 0)
                 onClicked: {
                     console.debug(model.index-1);
                     widgets.switchAt(model.index-1);
+                }
+                RowLayout {
+                    anchors.fill: parent
+                    spacing: 10
+                    anchors.margins: 5
+                    Image {
+                        id: itemIcon
+                        fillMode: Image.PreserveAspectFit
+                        Layout.fillHeight: true
+                        Layout.maximumWidth: 40
+                        Layout.preferredWidth: 40
+                        Layout.fillWidth: true
+                        Component.onCompleted: {
+                            if(model.type === "map")
+                                source = "qrc:/icons/map.png";
+                            else if (model.type === "plot")
+                                source = "qrc:/icons/plot.png";
+                        }
+                    }
+                    Label {
+                        id: itemText
+                        text: model.name
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+  //                      font.pixelSize: 22
+                        elide: Text.ElideRight
+                    }
                 }
             }
             ScrollIndicator.vertical: ScrollIndicator { }

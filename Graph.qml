@@ -47,7 +47,7 @@ Item {
     ChartView {
         id: chartView
         antialiasing: true
-        theme: ChartView.ChartThemeDark
+//        theme: ChartView.ChartThemeDark
 
         anchors { fill: parent; margins: -10 }             // This is hack for removing  weird margins or spacing
 //        margins { right: 0; bottom: 0; left: 0; top: 0 } // In the future i'll found another way to fix it

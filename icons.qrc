@@ -10,5 +10,8 @@
         <file>icons/swipe_to_right.png</file>
         <file>icons/zoom_in.png</file>
         <file>icons/zoom_out.png</file>
+        <file>icons/map.png</file>
+        <file>icons/plot.png</file>
+        <file>icons/plus.png</file>
     </qresource>
 </RCC>

@@ -59,9 +59,9 @@ void BupLogParser::parseLine(QString line){
         data.point.setAltitude(values.at(3).toDouble());
         points.append(data);
     }
-    else if (object.keys().contains("serial")) {
+    else if (object.keys().contains("series")) {
         QJsonValue timestamp = object.value("time");
-        QJsonArray values = object.value("serial").toArray();
+        QJsonArray values = object.value("series").toArray();
         QString name = values.at(0).toString();
         int index;
         for( index = 0; index < series.count(); index++) {
