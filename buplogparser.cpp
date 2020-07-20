@@ -135,7 +135,7 @@ QStringList BupLogParser::getPointsList(void){
 }
 QGeoCoordinate BupLogParser::getPoint(QString name) {
     int index = 0;
-    for (int index = 0; index < points.count(); index++) {
+    for (; index < points.count(); index++) {
         if (points.at(index).name == name)
             break;
     }
