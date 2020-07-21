@@ -47,6 +47,7 @@ private:
 
 
     void parseLine(QString line);
+    void trackToSeries(void);
     void clear(void);
     QList<QPointF> createSeries(QString xTag, QString yTag);
 

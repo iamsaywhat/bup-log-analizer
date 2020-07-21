@@ -33,6 +33,7 @@ bool BupLogParser::openFile(QString path){
             status = true;
         }
     }
+    trackToSeries();
     if(file.isOpen())
         file.close();
     emit fileOpen(path);
@@ -87,6 +88,34 @@ void BupLogParser::parseLine(QString line){
         data.coordinate.setLongitude(values.at(2).toDouble());
         data.coordinate.setAltitude(values.at(3).toDouble());
         track.append(data);
+    }
+}
+void BupLogParser::trackToSeries(void){
+    if(track.size() > 0){
+        Series *latitude = new Series;
+        Series *longitude = new Series;
+        Series *altitude = new Series;
+        latitude->name = "track.latitude";
+        longitude->name = "track.longitude";
+        altitude->name = "track.altitude";
+
+        QList<GeoTrack>::const_iterator i;
+        for(i = track.cbegin(); i != track.cend(); ++i) {
+           latitude->timestamp.append((*i).timestamp);
+           longitude->timestamp.append((*i).timestamp);
+           altitude->timestamp.append((*i).timestamp);
+
+           latitude->step.append((*i).step);
+           longitude->step.append((*i).step);
+           altitude->step.append((*i).step);
+
+           latitude->value.append((*i).coordinate.latitude());
+           longitude->value.append((*i).coordinate.longitude());
+           altitude->value.append((*i).coordinate.altitude());
+        }
+        series.append(latitude);
+        series.append(longitude);
+        series.append(altitude);
     }
 }
 QList<QPointF> BupLogParser::createSeries(QString xTag, QString yTag){
