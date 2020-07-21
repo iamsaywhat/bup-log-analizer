@@ -41,6 +41,17 @@ Item {
         anchors.fill: root
         plugin: mapPlugin
         zoomLevel: 14
+        Timer {
+            interval: 100; running: true; repeat: false
+            onTriggered: {
+                for(var i = 0; i < map.supportedMapTypes.length; ++i){
+                    if (map.supportedMapTypes[i].style === MapType.CustomMap ) {
+                        map.activeMapType = map.supportedMapTypes[i];
+                    }
+                }
+
+            }
+        }
     }
     Item {
         id: instruments
