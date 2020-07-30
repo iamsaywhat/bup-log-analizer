@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.13
 import QtLocation 5.13
 import QtPositioning 5.13
+import QtGraphicalEffects 1.13
 
 
 Item {
@@ -53,47 +54,67 @@ Item {
             }
         }
     }
-    Item {
+    Rectangle {
         id: instruments
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 10
-        width: 40
+        width: 35
         height: width*2
-//            Item {
-//                id: zoom
-            Button {
-                id: zoomIn
-                width: parent.width
-                height: width
-                anchors.top: parent.top
-                onClicked: {
-                    map.zoomLevel = map.zoomLevel + 1
-                }
-                Image {
-                    id: zoomInIcon
-                    source: "qrc:/icons/zoom_in.png"
-                    anchors.fill: parent
-                    anchors.margins: 5
-
-                }
+        radius: 10
+        Button {
+            id: zoomIn
+            width: parent.width
+            height: width
+            anchors.top: parent.top
+            onClicked: {
+                map.zoomLevel = map.zoomLevel + 1
             }
-            Button {
-                id: zoomOut
-                width: parent.width
-                height: width
-                anchors.top: zoomIn.bottom
-                onClicked: {
-                    map.zoomLevel = map.zoomLevel - 1
-                }
-                Image {
-                    id: zoomOutIcon
-                    source: "qrc:/icons/zoom_out.png"
-                    anchors.fill: parent
-                    anchors.margins: 5
-                }
+            background: Rectangle {
+                color: "white"
+                radius: 10
             }
-//            }
+            Image {
+                id: zoomInIcon
+                source: "qrc:/icons/zoom_in.png"
+                anchors.fill: parent
+                anchors.margins: parent.pressed ? 7 : 8
+                opacity: parent.hovered ? 1 : 0.6
+            }
+        }
+        Button {
+            id: zoomOut
+            width: parent.width
+            height: width
+            anchors.top: zoomIn.bottom
+            onClicked: {
+                map.zoomLevel = map.zoomLevel - 1
+            }
+            background: Rectangle {
+                color: "white"
+                radius: 10
+            }
+            Image {
+                id: zoomOutIcon
+                source: "qrc:/icons/zoom_out.png"
+                anchors.fill: parent
+                anchors.margins: parent.pressed ? 7 : 8
+                opacity: parent.hovered ? 1 : 0.6
+            }
+        }
+        MenuSeparator {
+            width: parent.width
+            anchors.verticalCenter: parent.verticalCenter
+            visible: true
+        }
     }
-
+    DropShadow {
+        anchors.fill: instruments
+        horizontalOffset: 3
+        verticalOffset: 3
+        radius: 5.0
+        samples: 17
+        color: "#80000000"
+        source: instruments
+    }
 }
