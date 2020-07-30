@@ -51,9 +51,8 @@ Item {
                 widgets.setCurrentIndex(widgets.count - 1);
         }
         background: Rectangle {
-            color: parent.pressed ? "#d6d6d6" : 'white'
-            radius: 20
-            opacity: parent.pressed ? 0.8 : 0
+            color: "white"
+            opacity: parent.pressed ? 0.2 : 0
         }
         Image {
             source: "qrc:/icons/swipe_to_left.png"
@@ -72,6 +71,7 @@ Item {
         Image {
             source: "qrc:/icons/swipe_to_right.png"
             anchors.fill: parent
+            opacity: !parent.hovered ? 0.5 : 0.8
         }
         onClicked: {
             if(widgets.currentIndex < widgets.count - 1)
@@ -79,6 +79,9 @@ Item {
             else
                 widgets.setCurrentIndex(0);
         }
-
+        background: Rectangle {
+            color: "white"
+            opacity: parent.pressed ? 0.2 : 0
+        }
     }
 }
