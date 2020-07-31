@@ -38,6 +38,8 @@ Item {
             if(autoscaleMaxY < lineSeries.at(i).y)
                 autoscaleMaxY = lineSeries.at(i).y;
         }
+        axisX.tickInterval = Math.abs(autoscaleMaxX - autoscaleMinX) / 10;
+        axisY.tickInterval = Math.abs(autoscaleMaxY - autoscaleMinY) / 10;
     }
     // Clear axes
     function clear(){
@@ -60,11 +62,18 @@ Item {
             id: axisX
             min: autoscaleMinX
             max: autoscaleMaxX
+            tickType: ValueAxis.TicksDynamic
+            tickAnchor: 0
+            tickInterval: 1
         }
         ValueAxis {
             id: axisY
             min: autoscaleMinY
             max: autoscaleMaxY
+            tickType: ValueAxis.TicksDynamic
+            tickAnchor: 0
+            tickInterval: 1
+
         }
     }
     MouseArea {
@@ -81,26 +90,25 @@ Item {
 
         onWheel: {
             if (wheel.modifiers & Qt.ControlModifier) {
-                //autoscaleMinX = autoscaleMinX + zoomCoefficient * (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
-                //autoscaleMaxX = autoscaleMaxX - zoomCoefficient * (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
-
-                chartView.zoomIn();
+                autoscaleMinX = autoscaleMinX + zoomCoefficient * (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
+                autoscaleMaxX = autoscaleMaxX - zoomCoefficient * (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
+                axisX.tickInterval = Math.abs(autoscaleMaxX - autoscaleMinX) / 10;
+                axisY.tickInterval = Math.abs(autoscaleMaxY - autoscaleMinY) / 10;
             }
             else if (wheel.modifiers & Qt.ShiftModifier) {
-                //autoscaleMinY = autoscaleMinY + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                //autoscaleMaxY = autoscaleMaxY - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-
-                chartView.zoomOut();
+                autoscaleMinY = autoscaleMinY + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                autoscaleMaxY = autoscaleMaxY - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                axisX.tickInterval = Math.abs(autoscaleMaxX - autoscaleMinX) / 10;
+                axisY.tickInterval = Math.abs(autoscaleMaxY - autoscaleMinY) / 10;
             }
             else {
-
-                //autoscaleMinX = autoscaleMinX + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                //autoscaleMaxX = autoscaleMaxX - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                //autoscaleMinY = autoscaleMinY + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                //autoscaleMaxY = autoscaleMaxY - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                chartView.zoomReset();
+                autoscaleMinX = autoscaleMinX + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                autoscaleMaxX = autoscaleMaxX - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                autoscaleMinY = autoscaleMinY + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                autoscaleMaxY = autoscaleMaxY - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                axisX.tickInterval = Math.abs(autoscaleMaxX - autoscaleMinX) / 10;
+                axisY.tickInterval = Math.abs(autoscaleMaxY - autoscaleMinY) / 10;
             }
-            console.debug("wheel");
         }
         onPressed: {
             dragAndMove = true;
@@ -109,15 +117,12 @@ Item {
         }
         onReleased: {
             dragAndMove = false;
-            deltaX = 0;
-            deltaY = 0;
         }
         onMouseXChanged: {
-            if(dragAndMove){
+            if(dragAndMove && containsMouse){
                 autoscaleMinX += deltaX - cursorPositionToAxisXY().x;
                 autoscaleMaxX += deltaX - cursorPositionToAxisXY().x;
                 deltaX = cursorPositionToAxisXY().x;
-
                 autoscaleMinY += deltaY - cursorPositionToAxisXY().y;
                 autoscaleMaxY += deltaY - cursorPositionToAxisXY().y;
                 deltaY = cursorPositionToAxisXY().y;
