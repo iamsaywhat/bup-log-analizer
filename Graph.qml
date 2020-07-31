@@ -6,10 +6,13 @@ Item {
     //anchors.fill: parent
 
     property real autoscaleMinX: 0
-    property real autoscaleMaxX: 0
+    property real autoscaleMaxX: 1
     property real autoscaleMinY: 0
-    property real autoscaleMaxY: 0
-
+    property real autoscaleMaxY: 1
+    property real zoomCoefficient: 3
+    property real deltaX: 0
+    property real deltaY: 0
+    property bool dragAndMove: false
 
     // Add series data to chart
     function addSeries (name, xname, yname){
@@ -40,10 +43,11 @@ Item {
     function clear(){
         chartView.removeAllSeries();
         autoscaleMinX = 0;
-        autoscaleMaxX = 0;
+        autoscaleMaxX = 1;
         autoscaleMinY = 0;
-        autoscaleMaxY = 0;
+        autoscaleMaxY = 1;
     }
+
     ChartView {
         id: chartView
         antialiasing: true
@@ -64,23 +68,60 @@ Item {
         }
     }
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+
+        function cursorPositionToAxisXY (){
+            var x = mouseX - (chartView.plotArea.x - 10);
+            var xScale = Math.abs(autoscaleMaxX - autoscaleMinX)/chartView.plotArea.width;
+            var y = chartView.plotArea.height - (mouseY - (chartView.plotArea.y - 10));
+            var yScale = Math.abs(autoscaleMaxY - autoscaleMinY)/chartView.plotArea.height;
+            return Qt.point(x * xScale + autoscaleMinX, y * yScale + autoscaleMinY);
+        }
+
         onWheel: {
             if (wheel.modifiers & Qt.ControlModifier) {
-                autoscaleMinX = autoscaleMinX + (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
-                autoscaleMaxX = autoscaleMaxX - (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
+                //autoscaleMinX = autoscaleMinX + zoomCoefficient * (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
+                //autoscaleMaxX = autoscaleMaxX - zoomCoefficient * (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
+
+                chartView.zoomIn();
             }
             else if (wheel.modifiers & Qt.ShiftModifier) {
-                autoscaleMinY = autoscaleMinY + (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                autoscaleMaxY = autoscaleMaxY - (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                //autoscaleMinY = autoscaleMinY + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                //autoscaleMaxY = autoscaleMaxY - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+
+                chartView.zoomOut();
             }
             else {
-                autoscaleMinX = autoscaleMinX + (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
-                autoscaleMaxX = autoscaleMaxX - (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
-                autoscaleMinY = autoscaleMinY + (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                autoscaleMaxY = autoscaleMaxY - (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+
+                //autoscaleMinX = autoscaleMinX + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                //autoscaleMaxX = autoscaleMaxX - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                //autoscaleMinY = autoscaleMinY + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                //autoscaleMaxY = autoscaleMaxY - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
+                chartView.zoomReset();
             }
             console.debug("wheel");
+        }
+        onPressed: {
+            dragAndMove = true;
+            deltaX = cursorPositionToAxisXY().x;
+            deltaY = cursorPositionToAxisXY().y;
+        }
+        onReleased: {
+            dragAndMove = false;
+            deltaX = 0;
+            deltaY = 0;
+        }
+        onMouseXChanged: {
+            if(dragAndMove){
+                autoscaleMinX += deltaX - cursorPositionToAxisXY().x;
+                autoscaleMaxX += deltaX - cursorPositionToAxisXY().x;
+                deltaX = cursorPositionToAxisXY().x;
+
+                autoscaleMinY += deltaY - cursorPositionToAxisXY().y;
+                autoscaleMaxY += deltaY - cursorPositionToAxisXY().y;
+                deltaY = cursorPositionToAxisXY().y;
+            }
         }
     }
 }

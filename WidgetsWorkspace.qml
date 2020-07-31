@@ -26,6 +26,7 @@ Item {
         id: widgets
         anchors.fill: parent;
         padding: 0
+        interactive: false
     }
     PageIndicator {
         id: indicator

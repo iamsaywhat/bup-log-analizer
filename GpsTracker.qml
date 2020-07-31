@@ -68,7 +68,7 @@ Item {
             height: width
             anchors.top: parent.top
             onClicked: {
-                map.zoomLevel = map.zoomLevel + 1
+                map.zoomLevel = map.zoomLevel + 0.5
             }
             background: Rectangle {
                 color: "white"
@@ -88,7 +88,7 @@ Item {
             height: width
             anchors.top: zoomIn.bottom
             onClicked: {
-                map.zoomLevel = map.zoomLevel - 1
+                map.zoomLevel = map.zoomLevel - 0.5
             }
             background: Rectangle {
                 color: "white"
