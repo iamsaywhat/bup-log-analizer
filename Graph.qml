@@ -114,9 +114,11 @@ Item {
             dragAndMove = true;
             deltaX = cursorPositionToAxisXY().x;
             deltaY = cursorPositionToAxisXY().y;
+            cursorShape = Qt.ClosedHandCursor;
         }
         onReleased: {
             dragAndMove = false;
+            cursorShape = Qt.OpenHandCursor;
         }
         onMouseXChanged: {
             if(dragAndMove && containsMouse){
