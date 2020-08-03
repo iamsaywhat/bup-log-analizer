@@ -1,18 +1,25 @@
 import QtQuick 2.12
+import QtQuick.Controls 2.12
 import QtCharts 2.12
+import QtQuick.Layouts 1.13
 
 Item {
     id: root
-    //anchors.fill: parent
-
     property real autoscaleMinX: 0
     property real autoscaleMaxX: 1
     property real autoscaleMinY: 0
     property real autoscaleMaxY: 1
+
+    property real currentMinX: 0
+    property real currentMaxX: 0
+    property real currentMinY: 0
+    property real currentMaxY: 1
+
     property real zoomCoefficient: 3
     property real deltaX: 0
     property real deltaY: 0
     property bool dragAndMove: false
+    property color buttonColor: 'black'
 
     // Add series data to chart
     function addSeries (name, xname, yname){
@@ -40,6 +47,11 @@ Item {
         }
         axisX.tickInterval = multipleGridInterval(autoscaleMinX, autoscaleMaxX);
         axisY.tickInterval = multipleGridInterval(autoscaleMinY, autoscaleMaxY);
+
+        currentMinX = autoscaleMinX;
+        currentMaxX = autoscaleMaxX;
+        currentMinY = autoscaleMinY;
+        currentMaxY = autoscaleMaxY;
     }
     // Clear axes
     function clear(){
@@ -71,6 +83,15 @@ Item {
         var yScale = Math.abs(autoscaleMaxY - autoscaleMinY)/chartView.plotArea.height;
         return Qt.point(x * xScale + autoscaleMinX, y * yScale + autoscaleMinY);
     }
+    // Zoom to oginal view
+    function autoScale () {
+        currentMinX = autoscaleMinX;
+        currentMaxX = autoscaleMaxX;
+        currentMinY = autoscaleMinY;
+        currentMaxY = autoscaleMaxY;
+        axisX.tickInterval = multipleGridInterval(autoscaleMinX, autoscaleMaxX);
+        axisY.tickInterval = multipleGridInterval(autoscaleMinY, autoscaleMaxY);
+    }
     ChartView {
         id: chartView
         antialiasing: true
@@ -81,16 +102,16 @@ Item {
 
         ValueAxis {
             id: axisX
-            min: autoscaleMinX
-            max: autoscaleMaxX
+            min: currentMinX
+            max: currentMaxX
             tickType: ValueAxis.TicksDynamic
             tickAnchor: 0
             tickInterval: 1
         }
         ValueAxis {
             id: axisY
-            min: autoscaleMinY
-            max: autoscaleMaxY
+            min: currentMinY
+            max: currentMaxY
             tickType: ValueAxis.TicksDynamic
             tickAnchor: 0
             tickInterval: 1
@@ -100,47 +121,187 @@ Item {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         onWheel: {
             if (wheel.modifiers & Qt.ControlModifier) {
-                autoscaleMinX = autoscaleMinX + zoomCoefficient * (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
-                autoscaleMaxX = autoscaleMaxX - zoomCoefficient * (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
-                axisX.tickInterval = multipleGridInterval(autoscaleMinX, autoscaleMaxX);
+                currentMinX = currentMinX + zoomCoefficient * (currentMaxX - currentMinX)/wheel.angleDelta.y;
+                currentMaxX = currentMaxX - zoomCoefficient * (currentMaxX - currentMinX)/wheel.angleDelta.y;
+                axisX.tickInterval = multipleGridInterval(currentMinX, currentMaxX);
             }
             else if (wheel.modifiers & Qt.ShiftModifier) {
-                autoscaleMinY = autoscaleMinY + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                autoscaleMaxY = autoscaleMaxY - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                axisY.tickInterval = multipleGridInterval(autoscaleMinY, autoscaleMaxY);
+                currentMinY = currentMinY + zoomCoefficient * (currentMaxY - currentMinY)/wheel.angleDelta.y;
+                currentMaxY = currentMaxY - zoomCoefficient * (currentMaxY - currentMinY)/wheel.angleDelta.y;
+                axisY.tickInterval = multipleGridInterval(currentMinY, currentMaxY);
             }
             else {
-                autoscaleMinX = autoscaleMinX + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                autoscaleMaxX = autoscaleMaxX - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                autoscaleMinY = autoscaleMinY + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                autoscaleMaxY = autoscaleMaxY - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                axisX.tickInterval = multipleGridInterval(autoscaleMinX, autoscaleMaxX);
-                axisY.tickInterval = multipleGridInterval(autoscaleMinY, autoscaleMaxY);
+                if (verticalZoom.checked) {
+                    currentMinY = currentMinY + zoomCoefficient * (currentMaxY - currentMinY)/wheel.angleDelta.y;
+                    currentMaxY = currentMaxY - zoomCoefficient * (currentMaxY - currentMinY)/wheel.angleDelta.y;
+                    axisY.tickInterval = multipleGridInterval(currentMinY, currentMaxY);
+                }
+                else if (horizontalZoom.checked) {
+                    currentMinX = currentMinX + zoomCoefficient * (currentMaxX - currentMinX)/wheel.angleDelta.y;
+                    currentMaxX = currentMaxX - zoomCoefficient * (currentMaxX - currentMinX)/wheel.angleDelta.y;
+                    axisX.tickInterval = multipleGridInterval(currentMinX, currentMaxX);
+                }
+                else if (allZoom.checked) {
+                    currentMinX = currentMinX + zoomCoefficient * (currentMaxY - currentMinY)/wheel.angleDelta.y;
+                    currentMaxX = currentMaxX - zoomCoefficient * (currentMaxY - currentMinY)/wheel.angleDelta.y;
+                    currentMinY = currentMinY + zoomCoefficient * (currentMaxY - currentMinY)/wheel.angleDelta.y;
+                    currentMaxY = currentMaxY - zoomCoefficient * (currentMaxY - currentMinY)/wheel.angleDelta.y;
+                    axisX.tickInterval = multipleGridInterval(currentMinX, currentMaxX);
+                    axisY.tickInterval = multipleGridInterval(currentMinY, currentMaxY);
+                }
             }
         }
         onPressed: {
-            dragAndMove = true;
-            var cursor = cursorPositionToAxisXY();
-            deltaX = cursor.x;
-            deltaY = cursor.y;
-            cursorShape = Qt.ClosedHandCursor;
+            if(mouse.button === Qt.LeftButton) {
+                dragAndMove = true;
+                var cursor = cursorPositionToAxisXY();
+                deltaX = cursor.x;
+                deltaY = cursor.y;
+                cursorShape = Qt.ClosedHandCursor;
+                if (rightClickMenu.visible)
+                    rightClickMenu.visible = false;
+            }
+            else if (mouse.button === Qt.RightButton) {
+                rightClickMenu.visible = true;
+                rightClickMenu.x = mouseX;
+                rightClickMenu.y = mouseY;
+            }
+            else {
+                if (rightClickMenu.visible)
+                    rightClickMenu.visible = false;
+            }
         }
         onReleased: {
-            dragAndMove = false;
-            cursorShape = Qt.OpenHandCursor;
+            if(mouse.button === Qt.LeftButton) {
+                dragAndMove = false;
+                cursorShape = Qt.OpenHandCursor;
+            }
         }
         onMouseXChanged: {
             if(dragAndMove && containsMouse){
                 var cursor = cursorPositionToAxisXY(); // get current postion
-                autoscaleMinX += deltaX - cursor.x;
-                autoscaleMaxX += deltaX - cursor.x;
-                autoscaleMinY += deltaY - cursor.y;
-                autoscaleMaxY += deltaY - cursor.y;
+                currentMinX += deltaX - cursor.x;
+                currentMaxX += deltaX - cursor.x;
+                currentMinY += deltaY - cursor.y;
+                currentMaxY += deltaY - cursor.y;
                 cursor = cursorPositionToAxisXY();     // update cursor
                 deltaX = cursor.x;                     // fixing the new value
                 deltaY = cursor.y;
+            }
+        }
+    }
+    Rectangle {
+        id: rightClickMenu
+        visible: false
+        width: 150
+        opacity: 0.7
+        color: 'black'
+        height: 150
+        radius: 5
+        ColumnLayout {
+            id: rightMenuLayout
+            anchors.fill: parent
+            spacing: 0
+            anchors.margins: 0
+            Button {
+                id: originalView
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                text: qsTr("Reset to original view")
+                background: Rectangle {
+                    anchors.fill:parent
+                    color: rightClickMenu.color
+                    opacity: parent.hovered ? 0.3 : 0
+                }
+                contentItem: Text {
+                    text: parent.text
+                    font: parent.font
+                    color: 'white'
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+                onClicked: autoScale();
+            }
+            MenuSeparator {
+                Layout.fillWidth: true
+                spacing: 0
+            }
+            Button {
+                id: verticalZoom
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                checkable: true
+                text: qsTr("Vertical zoom")
+                background: Rectangle {
+                    anchors.fill:parent
+                    color: rightClickMenu.color
+                    opacity: parent.checked ? 0.3 : 0
+                }
+                contentItem: Text {
+                    text: parent.text
+                    font: parent.font
+                    color: 'white'
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+                onPressed: {
+                    horizontalZoom.checked = false;
+                    allZoom.checked = false;
+                }
+            }
+            Button {
+                id: horizontalZoom
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                checkable: true
+                text: qsTr("Horizontal zoom")
+                background: Rectangle {
+                    anchors.fill:parent
+                    color: rightClickMenu.color
+                    opacity: parent.checked ? 0.3 : 0
+                }
+                contentItem: Text {
+                    text: parent.text
+                    font: parent.font
+                    color: 'white'
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+                onPressed: {
+                    verticalZoom.checked = false;
+                    allZoom.checked = false;
+                }
+            }
+            Button {
+                id: allZoom
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                checkable: true
+                checked: true
+                text: qsTr("Zoom")
+                background: Rectangle {
+                    anchors.fill:parent
+                    color: rightClickMenu.color
+                    opacity: parent.checked ? 0.3 : 0
+                }
+                contentItem: Text {
+                    text: parent.text
+                    font: parent.font
+                    color: 'white'
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+                onPressed: {
+                    horizontalZoom.checked = false;
+                    verticalZoom.checked = false;
+                }
             }
         }
     }
