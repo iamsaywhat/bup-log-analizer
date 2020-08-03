@@ -122,8 +122,9 @@ Item {
         }
         onPressed: {
             dragAndMove = true;
-            deltaX = cursorPositionToAxisXY().x;
-            deltaY = cursorPositionToAxisXY().y;
+            var cursor = cursorPositionToAxisXY();
+            deltaX = cursor.x;
+            deltaY = cursor.y;
             cursorShape = Qt.ClosedHandCursor;
         }
         onReleased: {
@@ -132,12 +133,14 @@ Item {
         }
         onMouseXChanged: {
             if(dragAndMove && containsMouse){
-                autoscaleMinX += deltaX - cursorPositionToAxisXY().x;
-                autoscaleMaxX += deltaX - cursorPositionToAxisXY().x;
-                deltaX = cursorPositionToAxisXY().x;
-                autoscaleMinY += deltaY - cursorPositionToAxisXY().y;
-                autoscaleMaxY += deltaY - cursorPositionToAxisXY().y;
-                deltaY = cursorPositionToAxisXY().y;
+                var cursor = cursorPositionToAxisXY(); // get current postion
+                autoscaleMinX += deltaX - cursor.x;
+                autoscaleMaxX += deltaX - cursor.x;
+                autoscaleMinY += deltaY - cursor.y;
+                autoscaleMaxY += deltaY - cursor.y;
+                cursor = cursorPositionToAxisXY();     // update cursor
+                deltaX = cursor.x;                     // fixing the new value
+                deltaY = cursor.y;
             }
         }
     }
