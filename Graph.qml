@@ -79,7 +79,6 @@ Item {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-
         // Convert cursor position to axis data
         function cursorPositionToAxisXY (){
             var x = mouseX - (chartView.plotArea.x - 10);
@@ -88,8 +87,9 @@ Item {
             var yScale = Math.abs(autoscaleMaxY - autoscaleMinY)/chartView.plotArea.height;
             return Qt.point(x * xScale + autoscaleMinX, y * yScale + autoscaleMinY);
         }
-        function gridInterval (lower, upper) {
-            var interval = Math.abs(lower - upper) / 10;
+        // Calculate multiple axis inteval
+        function multipleGridInterval (lower, upper) {
+            var interval = Math.abs(lower - upper) / 10;  // i want ~10 tick
             var scale;
             for(scale = 0; interval < 1; scale++)
                 interval *= 10;
