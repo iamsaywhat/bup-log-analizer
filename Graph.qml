@@ -11,7 +11,7 @@ Item {
     property real autoscaleMaxY: 1
 
     property real currentMinX: 0
-    property real currentMaxX: 0
+    property real currentMaxX: 1
     property real currentMinY: 0
     property real currentMaxY: 1
 
@@ -24,34 +24,42 @@ Item {
     // Add series data to chart
     function addSeries (name, xname, yname){
         var lineSeries = chartView.createSeries(ChartView.SeriesTypeLine, name, axisX, axisY);
-        parser.getSeries(lineSeries, xname, yname);
-        // Update max min X-axes for autoscale
-        if(chartView.count === 1) // the first data appended have to initialiize autoscale vars
-            autoscaleMinX = lineSeries.at(0).x;
-        else
-            if(autoscaleMinX  > lineSeries.at(0).x)
+        parser.getSeries(lineSeries, xname, yname);   // get filled lineSeries
+
+        // check that lineSeries is not empty
+        if (lineSeries.count > 0) {
+            // Update max min X-axes for autoscale
+            if(chartView.count === 1) // the first data appended have to initialiize autoscale vars
                 autoscaleMinX = lineSeries.at(0).x;
-        if(autoscaleMaxX < lineSeries.at(lineSeries.count-1).x)
-            autoscaleMaxX = lineSeries.at(lineSeries.count-1).x;
+            else
+                if(autoscaleMinX  > lineSeries.at(0).x)
+                    autoscaleMinX = lineSeries.at(0).x;
+            if(autoscaleMaxX < lineSeries.at(lineSeries.count-1).x)
+                autoscaleMaxX = lineSeries.at(lineSeries.count-1).x;
 
-        // Update max min Y-axes for autoscale
-        if(chartView.count === 1){ // the first data appended have to initialiize autoscale vars
-            autoscaleMinY = lineSeries.at(0).y;
-            autoscaleMaxY = lineSeries.at(0).y;
-        }
-        for(var i = 0; i < lineSeries.count; i++){
-            if(autoscaleMinY > lineSeries.at(i).y)
-                autoscaleMinY = lineSeries.at(i).y;
-            if(autoscaleMaxY < lineSeries.at(i).y)
-                autoscaleMaxY = lineSeries.at(i).y;
-        }
-        axisX.tickInterval = multipleGridInterval(autoscaleMinX, autoscaleMaxX);
-        axisY.tickInterval = multipleGridInterval(autoscaleMinY, autoscaleMaxY);
+            // Update max min Y-axes for autoscale
+            if(chartView.count === 1){ // the first data appended have to initialiize autoscale vars
+                autoscaleMinY = lineSeries.at(0).y;
+                autoscaleMaxY = lineSeries.at(0).y;
+            }
+            for(var i = 0; i < lineSeries.count; i++){
+                if(autoscaleMinY > lineSeries.at(i).y)
+                    autoscaleMinY = lineSeries.at(i).y;
+                if(autoscaleMaxY < lineSeries.at(i).y)
+                    autoscaleMaxY = lineSeries.at(i).y;
+            }
+            axisX.tickInterval = multipleGridInterval(autoscaleMinX, autoscaleMaxX);
+            axisY.tickInterval = multipleGridInterval(autoscaleMinY, autoscaleMaxY);
 
-        currentMinX = autoscaleMinX;
-        currentMaxX = autoscaleMaxX;
-        currentMinY = autoscaleMinY;
-        currentMaxY = autoscaleMaxY;
+            currentMinX = autoscaleMinX;
+            currentMaxX = autoscaleMaxX;
+            currentMinY = autoscaleMinY;
+            currentMaxY = autoscaleMaxY;
+        }
+        else {
+            // if lineSeries is empty - remove that
+            chartView.removeSeries(lineSeries);
+        }
     }
     // Clear axes
     function clear(){
@@ -64,15 +72,19 @@ Item {
     // Calculate multiple axis inteval
     function multipleGridInterval (lower, upper) {
         var interval = Math.abs(lower - upper) / 10;  // i want ~10 tick
-        var scale;
-        for(scale = 0; interval < 1; scale++)
-            interval *= 10;
-        interval = Math.ceil(interval);
-        if(interval % 2 < interval % 5)
-            interval -= interval % 2;
+        if(interval > 0) {
+            var scale;
+            for(scale = 0; interval < 1; scale++)
+                interval *= 10;
+            interval = Math.ceil(interval);
+            if(interval % 2 < interval % 5)
+                interval -= interval % 2;
+            else
+                interval -= interval % 5;
+            interval = interval / Math.pow(10, scale);
+        }
         else
-            interval -= interval % 5;
-        interval = interval / Math.pow(10, scale);
+            interval = 0;
         return interval;
     }
     // Convert cursor position to axis data
