@@ -38,8 +38,8 @@ Item {
             if(autoscaleMaxY < lineSeries.at(i).y)
                 autoscaleMaxY = lineSeries.at(i).y;
         }
-        axisX.tickInterval = Math.abs(autoscaleMaxX - autoscaleMinX) / 10;
-        axisY.tickInterval = Math.abs(autoscaleMaxY - autoscaleMinY) / 10;
+        axisX.tickInterval = multipleGridInterval(autoscaleMinX, autoscaleMaxX);
+        axisY.tickInterval = multipleGridInterval(autoscaleMinY, autoscaleMaxY);
     }
     // Clear axes
     function clear(){
@@ -49,7 +49,28 @@ Item {
         autoscaleMinY = 0;
         autoscaleMaxY = 1;
     }
-
+    // Calculate multiple axis inteval
+    function multipleGridInterval (lower, upper) {
+        var interval = Math.abs(lower - upper) / 10;  // i want ~10 tick
+        var scale;
+        for(scale = 0; interval < 1; scale++)
+            interval *= 10;
+        interval = Math.ceil(interval);
+        if(interval % 2 < interval % 5)
+            interval -= interval % 2;
+        else
+            interval -= interval % 5;
+        interval = interval / Math.pow(10, scale);
+        return interval;
+    }
+    // Convert cursor position to axis data
+    function cursorPositionToAxisXY (){
+        var x = mouseArea.mouseX - (chartView.plotArea.x - 10);
+        var xScale = Math.abs(autoscaleMaxX - autoscaleMinX)/chartView.plotArea.width;
+        var y = chartView.plotArea.height - (mouseArea.mouseY - (chartView.plotArea.y - 10));
+        var yScale = Math.abs(autoscaleMaxY - autoscaleMinY)/chartView.plotArea.height;
+        return Qt.point(x * xScale + autoscaleMinX, y * yScale + autoscaleMinY);
+    }
     ChartView {
         id: chartView
         antialiasing: true
@@ -79,46 +100,24 @@ Item {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        // Convert cursor position to axis data
-        function cursorPositionToAxisXY (){
-            var x = mouseX - (chartView.plotArea.x - 10);
-            var xScale = Math.abs(autoscaleMaxX - autoscaleMinX)/chartView.plotArea.width;
-            var y = chartView.plotArea.height - (mouseY - (chartView.plotArea.y - 10));
-            var yScale = Math.abs(autoscaleMaxY - autoscaleMinY)/chartView.plotArea.height;
-            return Qt.point(x * xScale + autoscaleMinX, y * yScale + autoscaleMinY);
-        }
-        // Calculate multiple axis inteval
-        function multipleGridInterval (lower, upper) {
-            var interval = Math.abs(lower - upper) / 10;  // i want ~10 tick
-            var scale;
-            for(scale = 0; interval < 1; scale++)
-                interval *= 10;
-            interval = Math.ceil(interval);
-            if(interval % 2 < interval % 5)
-                interval -= interval % 2;
-            else
-                interval -= interval % 5;
-            interval = interval / Math.pow(10, scale);
-            return interval;
-        }
         onWheel: {
             if (wheel.modifiers & Qt.ControlModifier) {
                 autoscaleMinX = autoscaleMinX + zoomCoefficient * (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
                 autoscaleMaxX = autoscaleMaxX - zoomCoefficient * (autoscaleMaxX - autoscaleMinX)/wheel.angleDelta.y;
-                axisX.tickInterval = gridInterval(autoscaleMinX, autoscaleMaxX);
+                axisX.tickInterval = multipleGridInterval(autoscaleMinX, autoscaleMaxX);
             }
             else if (wheel.modifiers & Qt.ShiftModifier) {
                 autoscaleMinY = autoscaleMinY + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
                 autoscaleMaxY = autoscaleMaxY - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                axisY.tickInterval = gridInterval(autoscaleMinY, autoscaleMaxY);
+                axisY.tickInterval = multipleGridInterval(autoscaleMinY, autoscaleMaxY);
             }
             else {
                 autoscaleMinX = autoscaleMinX + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
                 autoscaleMaxX = autoscaleMaxX - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
                 autoscaleMinY = autoscaleMinY + zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
                 autoscaleMaxY = autoscaleMaxY - zoomCoefficient * (autoscaleMaxY - autoscaleMinY)/wheel.angleDelta.y;
-                axisX.tickInterval = gridInterval(autoscaleMinX, autoscaleMaxX);
-                axisY.tickInterval = gridInterval(autoscaleMinY, autoscaleMaxY);
+                axisX.tickInterval = multipleGridInterval(autoscaleMinX, autoscaleMaxX);
+                axisY.tickInterval = multipleGridInterval(autoscaleMinY, autoscaleMaxY);
             }
         }
         onPressed: {
