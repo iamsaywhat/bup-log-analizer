@@ -157,7 +157,7 @@ ApplicationWindow {
             onAddPlot: {
                 var itemIndex = activeWidgetsModel.find(name);
                 if(itemIndex === -1){
-                    var component = Qt.createComponent("Graph.qml");
+                    var component = Qt.createComponent("Plot.qml");
                     if (component.status === Component.Ready) {
                         var object = component.createObject(widgets);
                         activeWidgetsModel.append({'type': 'plot', 'name': name});
@@ -203,7 +203,6 @@ ApplicationWindow {
         }
         Pane {
             id: widgetPane
-            //anchors.fill: parent;
             padding: 0
             WidgetsWorkspace {
                 id: widgets

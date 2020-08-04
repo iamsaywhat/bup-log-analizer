@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>GpsTracker.qml</file>
-        <file>Graph.qml</file>
+        <file>Plot.qml</file>
         <file>AppHeader.qml</file>
         <file>WidgetsWorkspace.qml</file>
         <file>OpenFilePage.qml</file>

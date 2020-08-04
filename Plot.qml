@@ -1,3 +1,6 @@
+/**********************************************************************
+    Plot
+**********************************************************************/
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtCharts 2.12
@@ -107,10 +110,9 @@ Item {
     ChartView {
         id: chartView
         antialiasing: true
-//        theme: ChartView.ChartThemeDark
-
+        theme: ChartView.ChartThemeQt
         anchors { fill: parent; margins: -10 }             // This is hack for removing  weird margins or spacing
-//        margins { right: 0; bottom: 0; left: 0; top: 0 } // In the future i'll found another way to fix it
+//      margins { right: 0; bottom: 0; left: 0; top: 0 }   // In the future i'll found another way to fix it
 
         ValueAxis {
             id: axisX
@@ -247,7 +249,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 checkable: true
-                text: qsTr("Vertical zoom")
+                text: qsTr("Y axis zoom")
                 background: Rectangle {
                     anchors.fill:parent
                     color: rightClickMenu.color
@@ -271,7 +273,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 checkable: true
-                text: qsTr("Horizontal zoom")
+                text: qsTr("X axis zoom")
                 background: Rectangle {
                     anchors.fill:parent
                     color: rightClickMenu.color
