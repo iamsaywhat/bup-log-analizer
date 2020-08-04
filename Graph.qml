@@ -90,10 +90,10 @@ Item {
     // Convert cursor position to axis data
     function cursorPositionToAxisXY (){
         var x = mouseArea.mouseX - (chartView.plotArea.x - 10);
-        var xScale = Math.abs(autoscaleMaxX - autoscaleMinX)/chartView.plotArea.width;
+        var xScale = Math.abs(currentMaxX - currentMinX)/chartView.plotArea.width;
         var y = chartView.plotArea.height - (mouseArea.mouseY - (chartView.plotArea.y - 10));
-        var yScale = Math.abs(autoscaleMaxY - autoscaleMinY)/chartView.plotArea.height;
-        return Qt.point(x * xScale + autoscaleMinX, y * yScale + autoscaleMinY);
+        var yScale = Math.abs(currentMaxY - currentMinY)/chartView.plotArea.height;
+        return Qt.point(x * xScale + currentMinX, y * yScale + currentMinY);
     }
     // Zoom to oginal view
     function autoScale () {
