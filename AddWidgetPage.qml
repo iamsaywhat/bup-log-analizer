@@ -137,7 +137,7 @@ Item {
                 id: plotWidgetSelector
                 anchors.top: parent.bottom
                 width: parent.width
-                label.text: "Select widget:"
+                label.text: qsTr("Select widget:")
                 combobox.editable: true
                 combobox.delegate: ItemDelegate {
                     text: model.name
@@ -156,13 +156,13 @@ Item {
                 id: plotXAxisSelector
                 anchors.top: plotWidgetSelector.bottom
                 width: parent.width
-                label.text: "Select x-axis:"
+                label.text: qsTr("Select x-axis:")
             }
             Selector {
                 id: plotYAxisSelector
                 width: parent.width
                 anchors.top: plotXAxisSelector.bottom
-                label.text: "Select y-axis:"
+                label.text: qTr("Select y-axis:")
             }
             Button {
                 id: addPlotButton
@@ -172,7 +172,7 @@ Item {
                 onClicked: {
                     if(plotWidgetSelector.combobox.editText == plotWidgetSelector.combobox.currentText
                        && plotWidgetSelector.combobox.editable){
-                        console.debug("wrong name");
+                        console.debug(qTr("wrong name"));
                     }
                     else {
                         var name = plotWidgetSelector.combobox.editText;
@@ -190,7 +190,7 @@ Item {
             visible: ((widgetSelector.combobox.currentIndex === 2) ? true : false)
             Selector {
                 id: pointWidgetSelector
-                label.text: "Select widget:"
+                label.text: qTr("Select widget:")
                 anchors.top: parent.top
                 width: parent.width
                 combobox.editable: true
