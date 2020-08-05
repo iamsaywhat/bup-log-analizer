@@ -18,6 +18,10 @@ Item {
         trackWidgetSelector.combobox.model = list;
         pointWidgetSelector.combobox.textRole = 'name';
         pointWidgetSelector.combobox.model = list;
+
+        plotWidgetSelector.combobox.editText = "";
+        trackWidgetSelector.combobox.editText = "";;
+        pointWidgetSelector.combobox.editText = "";
     }
 
     Connections {
@@ -75,13 +79,13 @@ Item {
                     visible: model.type === 'empty' || model.type === 'map'
                     height: ((model.type === 'empty' || model.type === 'map') ? 50 : 0)
                     onClicked: {
-                        trackWidgetSelector.combobox.currentIndex = model.index;
-                        if(model.index === 0) {
-                            trackWidgetSelector.combobox.editable = true;
-                            trackWidgetSelector.combobox.editText = '';
+                        trackWidgetSelector.combobox.currentIndex = model.index;  // switch curent element
+                        if(model.index === 0) {                             // it's <new widget> index0
+                            trackWidgetSelector.combobox.editable = true;   // make it editable
+                            trackWidgetSelector.combobox.editText = '';     // make it empty for user
                         }
                         else
-                            trackWidgetSelector.combobox.editable = false;
+                            trackWidgetSelector.combobox.editable = false;  // in other cases make it uneditable
                     }
                 }
             }
@@ -98,13 +102,13 @@ Item {
                     onClicked: trackColorSelector.combobox.currentIndex = index;
                 }
                 Component.onCompleted: {
-                    combobox.model.append({ text: 'black'});
-                    combobox.model.append({ text: 'red'});
-                    combobox.model.append({ text: 'blue'});
-                    combobox.model.append({ text: 'green'});
-                    combobox.model.append({ text: 'yellow'});
-                    combobox.model.append({ text: 'cyan'});
-                    combobox.model.append({ text: 'magenta'});
+                    combobox.model.append({text:'black'});
+                    combobox.model.append({text:'red'});
+                    combobox.model.append({text:'blue'});
+                    combobox.model.append({text:'green'});
+                    combobox.model.append({text:'yellow'});
+                    combobox.model.append({text:'cyan'});
+                    combobox.model.append({text:'magenta'});
                     combobox.currentIndex = 0;
                 }
             }
@@ -114,16 +118,18 @@ Item {
                 width: parent.width
                 text: qsTr("Add")
                 onClicked: {
-                    if(trackWidgetSelector.combobox.editText == trackWidgetSelector.combobox.currentText
-                       && trackWidgetSelector.combobox.editable){
+                    if(trackWidgetSelector.combobox.editText == "" &&    // if name is empty
+                       trackWidgetSelector.combobox.currentIndex == 0)   // and current index is index of <new widget>
+                    {
                         console.debug("wrong name");
                     }
                     else {
-                        trackWidgetSelector.combobox.editable = false;
-                        var name = trackWidgetSelector.combobox.editText;
-                        var color = trackColorSelector.combobox.currentText;
-                        addTrack(name, color);
+                        trackWidgetSelector.combobox.editable = false;        // the following will fix a bug with
+                        var name = trackWidgetSelector.combobox.editText;     // adding empty elements (before adding a
+                        var color = trackColorSelector.combobox.currentText;  // new element, you need to make the combobox
+                        addTrack(name, color);                                // uneditable)
                         trackWidgetSelector.combobox.editable = true;
+                        trackWidgetSelector.combobox.editText = "";
                     }
                 }
             }
@@ -145,8 +151,11 @@ Item {
                     visible: model.type === 'empty' || model.type === 'plot'
                     height: ((model.type === 'empty' || model.type === 'plot') ? 50 : 0)
                     onClicked: {
-                        if(model.index === 0)
+                        plotWidgetSelector.combobox.currentIndex = index;
+                        if(model.index === 0) {
                             plotWidgetSelector.combobox.editable = true;
+                            plotWidgetSelector.combobox.editText = "";
+                        }
                         else
                             plotWidgetSelector.combobox.editable = false;
                     }
@@ -162,7 +171,7 @@ Item {
                 id: plotYAxisSelector
                 width: parent.width
                 anchors.top: plotXAxisSelector.bottom
-                label.text: qTr("Select y-axis:")
+                label.text: qsTr("Select y-axis:")
             }
             Button {
                 id: addPlotButton
@@ -170,15 +179,19 @@ Item {
                 anchors.top: plotYAxisSelector.bottom
                 text: qsTr("Add")
                 onClicked: {
-                    if(plotWidgetSelector.combobox.editText == plotWidgetSelector.combobox.currentText
-                       && plotWidgetSelector.combobox.editable){
-                        console.debug(qTr("wrong name"));
+                    if(plotWidgetSelector.combobox.editText == "" &&    // if name is empty
+                       plotWidgetSelector.combobox.currentIndex == 0)   // and current index is index of <new widget>
+                    {
+                        console.debug("wrong name");
                     }
                     else {
+                        plotWidgetSelector.combobox.editable = false;
                         var name = plotWidgetSelector.combobox.editText;
                         var xAxisName = plotXAxisSelector.combobox.currentText;
                         var yAxixName = plotYAxisSelector.combobox.currentText;
                         addPlot(name, xAxisName, yAxixName);
+                        plotWidgetSelector.combobox.editable = true;
+                        plotWidgetSelector.combobox.editText = "";
                     }
                 }
             }
@@ -190,7 +203,7 @@ Item {
             visible: ((widgetSelector.combobox.currentIndex === 2) ? true : false)
             Selector {
                 id: pointWidgetSelector
-                label.text: qTr("Select widget:")
+                label.text: qsTr("Select widget:")
                 anchors.top: parent.top
                 width: parent.width
                 combobox.editable: true
@@ -200,8 +213,11 @@ Item {
                     visible: model.type === 'empty' || model.type === 'map'
                     height: ((model.type === 'empty' || model.type === 'map') ? 50 : 0)
                     onClicked: {
-                        if(model.index === 0)
+                        pointWidgetSelector.combobox.currentIndex = index;
+                        if(model.index === 0) {
                             pointWidgetSelector.combobox.editable = true;
+                            pointWidgetSelector.combobox.editText = "";
+                        }
                         else
                             pointWidgetSelector.combobox.editable = false;
                     }
@@ -227,9 +243,9 @@ Item {
                     onClicked: pointRadiusSelector.combobox.currentIndex = index;
                 }
                 combobox.validator: IntValidator {
-                        top: 5000
-                        bottom: 0
-                    }
+                    top: 5000
+                    bottom: 0
+                }
                 Component.onCompleted: {
                     pointRadiusSelector.combobox.model.append({text:'50'});
                     pointRadiusSelector.combobox.model.append({text:'100'});
@@ -271,18 +287,21 @@ Item {
                 width: parent.width
                 text: qsTr("Add")
                 onClicked: {
-                    console.debug("clisc");
-                    if(pointWidgetSelector.combobox.editText == pointWidgetSelector.combobox.currentText
-                       && pointWidgetSelector.combobox.editable){
+                    if(pointWidgetSelector.combobox.editText == "" &&
+                       pointWidgetSelector.combobox.currentIndex == 0)
+                    {
                         console.debug("wrong name");
                     }
                     else {
+                        pointWidgetSelector.combobox.editable = false;
                         var name = pointWidgetSelector.combobox.editText;
                         var point = pointNameSelector.combobox.currentText;
                         var radius = pointRadiusSelector.combobox.editText;
                         var opacity = 0.5;
                         var color = pointColorSelector.combobox.currentText;
                         addPoint(name, point, radius, opacity, color);
+                        pointWidgetSelector.combobox.editable = true;
+                        pointWidgetSelector.combobox.editText = "";
                     }
                 }
             }
