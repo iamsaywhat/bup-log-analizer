@@ -5,7 +5,6 @@ Item {
     id: root
     property alias label: label
     property alias combobox: combobox
-//      property color name: value
 
     height: 50
     width:  20

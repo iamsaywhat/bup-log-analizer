@@ -36,28 +36,26 @@ Item {
         Selector {
             id: widgetSelector
             anchors.top: parent.top
-//            anchors.left: parent.left
-//            anchors.right: parent.right
             width: parent.width
 
             label.text: qsTr("Object type:");
             label.font.pixelSize: 18
-            combobox.model: ListModel {
-                ListElement { text: "Track" }
-                ListElement { text: "Plot" }
-                ListElement { text: "Point" }
-            }
+            combobox.model: ListModel { }
             combobox.delegate: ItemDelegate {
                 text: model.text
+                width: parent.width
+                highlighted: ListView.isCurrentItem
+                onClicked: trackColorSelector.combobox.currentIndex = index;
             }
             combobox.onAccepted: {
                 if (combobox.find(combobox.editText) === -1)
                     combobox.model.append({text: editText})
             }
-            combobox.onActivated: {
-//                trackMenu.visible = ((index == 0) ? true : false);
-//                plotMenu.visible = ((index == 1) ? true : false);
-//                pointMenu.visible = ((index == 2) ? true : false);
+            Component.onCompleted: {
+                widgetSelector.combobox.model.append({text:"Track"});
+                widgetSelector.combobox.model.append({text:"Plot"});
+                widgetSelector.combobox.model.append({text:"Point"});
+                widgetSelector.combobox.currentIndex = 0;
             }
         }
         Item {
@@ -77,8 +75,11 @@ Item {
                     visible: model.type === 'empty' || model.type === 'map'
                     height: ((model.type === 'empty' || model.type === 'map') ? 50 : 0)
                     onClicked: {
-                        if(model.index === 0)
+                        trackWidgetSelector.combobox.currentIndex = model.index;
+                        if(model.index === 0) {
                             trackWidgetSelector.combobox.editable = true;
+                            trackWidgetSelector.combobox.editText = '';
+                        }
                         else
                             trackWidgetSelector.combobox.editable = false;
                     }
@@ -89,17 +90,22 @@ Item {
                 anchors.top: trackWidgetSelector.bottom
                 width: parent.width
                 label.text: qsTr("Color:")
-                combobox.model: ListModel {
-                    ListElement { text: 'black'}
-                    ListElement { text: 'red' }
-                    ListElement { text: 'blue' }
-                    ListElement { text: 'green' }
-                    ListElement { text: 'yellow'}
-                    ListElement { text: 'cyan'}
-                    ListElement { text: 'magenta'}
-                }
+                combobox.model: ListModel {}
                 combobox.delegate: ItemDelegate {
                     text: model.text
+                    width: parent.width
+                    highlighted: ListView.isCurrentItem
+                    onClicked: trackColorSelector.combobox.currentIndex = index;
+                }
+                Component.onCompleted: {
+                    combobox.model.append({ text: 'black'});
+                    combobox.model.append({ text: 'red'});
+                    combobox.model.append({ text: 'blue'});
+                    combobox.model.append({ text: 'green'});
+                    combobox.model.append({ text: 'yellow'});
+                    combobox.model.append({ text: 'cyan'});
+                    combobox.model.append({ text: 'magenta'});
+                    combobox.currentIndex = 0;
                 }
             }
             Button {
@@ -113,9 +119,11 @@ Item {
                         console.debug("wrong name");
                     }
                     else {
+                        trackWidgetSelector.combobox.editable = false;
                         var name = trackWidgetSelector.combobox.editText;
                         var color = trackColorSelector.combobox.currentText;
                         addTrack(name, color);
+                        trackWidgetSelector.combobox.editable = true;
                     }
                 }
             }
@@ -209,38 +217,51 @@ Item {
                 id: pointRadiusSelector
                 anchors.top: pointNameSelector.bottom
                 width: parent.width
-                label.text: qsTr("Radius:")
-                combobox.model: ListModel {
-                    ListElement { text: '50'}
-                    ListElement { text: '100'}
-                    ListElement { text: '150'}
-                    ListElement { text: '200'}
-                    ListElement { text: '250'}
-                    ListElement { text: '300'}
-                    ListElement { text: '350'}
-                    ListElement { text: '400'}
-                }
                 combobox.editable: true
+                label.text: qsTr("Radius:")
+                combobox.model: ListModel {}
+                combobox.delegate: ItemDelegate {
+                    text: model.text
+                    width: parent.width
+                    highlighted: ListView.isCurrentItem
+                    onClicked: pointRadiusSelector.combobox.currentIndex = index;
+                }
                 combobox.validator: IntValidator {
                         top: 5000
                         bottom: 0
                     }
+                Component.onCompleted: {
+                    pointRadiusSelector.combobox.model.append({text:'50'});
+                    pointRadiusSelector.combobox.model.append({text:'100'});
+                    pointRadiusSelector.combobox.model.append({text:'150'});
+                    pointRadiusSelector.combobox.model.append({text:'200'});
+                    pointRadiusSelector.combobox.model.append({text:'250'});
+                    pointRadiusSelector.combobox.model.append({text:'300'});
+                    pointRadiusSelector.combobox.model.append({text:'350'});
+                    pointRadiusSelector.combobox.model.append({text:'400'});
+                    pointRadiusSelector.combobox.currentIndex = 0;
+                }
             }
             Selector {
                 id: pointColorSelector
                 anchors.top: pointRadiusSelector.bottom
                 width: parent.width
                 label.text: qsTr("Color:")
-                combobox.model: ListModel {
-                    ListElement { text: 'red' }
-                    ListElement { text: 'blue' }
-                    ListElement { text: 'green' }
-                    ListElement { text: 'yellow'}
-                    ListElement { text: 'cyan'}
-                    ListElement { text: 'magenta'}
-                }
+                combobox.model: ListModel {}
                 combobox.delegate: ItemDelegate {
                     text: model.text
+                    width: parent.width
+                    highlighted: ListView.isCurrentItem
+                    onClicked: pointColorSelector.combobox.currentIndex = index;
+                }
+                Component.onCompleted: {
+                    pointColorSelector.combobox.model.append({text:'red'});
+                    pointColorSelector.combobox.model.append({text:'blue'});
+                    pointColorSelector.combobox.model.append({text:'green'});
+                    pointColorSelector.combobox.model.append({text:'yellow'});
+                    pointColorSelector.combobox.model.append({text:'cyan'});
+                    pointColorSelector.combobox.model.append({text:'magenta'});
+                    pointColorSelector.combobox.currentIndex = 0;
                 }
             }
 
