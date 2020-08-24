@@ -4,18 +4,31 @@ import QtQuick.Controls 2.12
 
 Item {
     id: root
+
+    property int spacing: 5
+    property int rowHeight: 50
+    property int rowWidth: 300
+
     signal confirmed(string name, string point, var radius, var opacity, color color);
+
     function setModel(model) {
         widgetSelector.combobox.model = model;
     }
+
     function setRole(role) {
         widgetSelector.combobox.textRole = role;
     }
+
     function setNamesModel(model) {
         nameSelector.combobox.model = model;
     }
+
+    width: rowWidth
+    height: rowHeight * 5
+
     ColumnLayout {
         anchors.fill: parent
+        spacing: spacing
         Selector {
             id: widgetSelector
             Layout.fillHeight: true

@@ -4,16 +4,27 @@ import QtQuick.Controls 2.12
 
 Item {
     id: root
+
+    property int spacing: 5
+    property int rowHeight: 50
+    property int rowWidth: 300
+
     signal confirmed(string name, color color);
+
     function setModel(model) {
         widgetSelector.combobox.model = model;
     }
+
     function selRole(role) {
         widgetSelector.combobox.textRole = role;
     }
 
+    width: rowWidth
+    height: rowHeight * 3
+
     ColumnLayout {
         anchors.fill: parent
+        spacing: spacing
         Selector {
             id: widgetSelector
             Layout.fillHeight: true

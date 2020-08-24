@@ -5,21 +5,35 @@ import QtQuick.Controls 2.12
 
 Item {
     id: root
+
+    property int spacing: 5
+    property int rowHeight: 50
+    property int rowWidth: 300
+
     signal confirmed(string name, string xname, string yname);
+
     function setModel(model) {
         widgetSelector.combobox.model = model;
     }
+
     function setRole(role) {
         widgetSelector.combobox.textRole = role;
     }
+
     function setXSelectorModel(model) {
         xAxisSelector.combobox.model = model;
     }
+
     function setYSelectorModel(model) {
         yAxisSelector.combobox.model = model;
     }
+
+    width: rowWidth
+    height: rowHeight * 4
+
     ColumnLayout {
         anchors.fill: parent
+        spacing: spacing
         Selector {
             id: widgetSelector
             Layout.fillHeight: true

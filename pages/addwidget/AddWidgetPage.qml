@@ -11,6 +11,9 @@ Item {
     signal addTrack(string name, color color);
     signal addPoint(string name, string point, var radius, var opacity, color color);
 
+
+    property int rowHeight: 50
+
     function setActivelWidgetList (list) {
         plotMenu.setModel(list);
         plotMenu.setRole('name');
@@ -37,7 +40,7 @@ Item {
             id: widgetSelector
             anchors.top: parent.top
             width: parent.width
-
+            height: rowHeight
             label.text: qsTr("Object type:");
             label.font.pixelSize: 18
             combobox.model: ListModel { }
@@ -60,24 +63,27 @@ Item {
         }
         TrackMenuProperties {
             id: trackMenu
-            width: parent.width
-            height: 200
+            rowHeight: rowHeight
+            rowWidth: parent.width
+            spacing: 10
             anchors.top: widgetSelector.bottom
             visible: ((widgetSelector.combobox.currentIndex === 0) ? true : false)
             onConfirmed: addTrack(name, color);
         }
         PlotMenuProperties {
             id: plotMenu
-            width: parent.width
-            height: 300
+            rowHeight: rowHeight
+            rowWidth: parent.width
+            spacing: 10
             anchors.top: widgetSelector.bottom
             visible: ((widgetSelector.combobox.currentIndex === 1) ? true : false)
             onConfirmed: addPlot(name, xname, yname);
         }
         PointMenuProperties {
             id: pointMenu
-            width: parent.width
-            height: 300
+            rowHeight: rowHeight
+            rowWidth: parent.width
+            spacing: 10
             anchors.top: widgetSelector.bottom
             visible: ((widgetSelector.combobox.currentIndex === 2) ? true : false)
             onConfirmed: addPoint(name, point, radius, opacity, color);
