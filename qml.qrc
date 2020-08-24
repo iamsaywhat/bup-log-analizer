@@ -8,5 +8,6 @@
         <file>OpenFilePage.qml</file>
         <file>AddWidgetPage.qml</file>
         <file>Selector.qml</file>
+        <file>TrackMenuProperties.qml</file>
     </qresource>
 </RCC>
