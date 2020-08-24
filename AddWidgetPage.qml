@@ -12,24 +12,23 @@ Item {
     signal addPoint(string name, string point, var radius, var opacity, color color);
 
     function setActivelWidgetList (list) {
-        plotWidgetSelector.combobox.textRole = 'name';
-        plotWidgetSelector.combobox.model = list;
-        trackWidgetSelector.combobox.textRole = 'name';
-        trackWidgetSelector.combobox.model = list;
-        pointWidgetSelector.combobox.textRole = 'name';
-        pointWidgetSelector.combobox.model = list;
-
-        plotWidgetSelector.combobox.editText = "";
-        trackWidgetSelector.combobox.editText = "";;
-        pointWidgetSelector.combobox.editText = "";
+        plotMenu.setModel(list);
+        plotMenu.setRole('name');
+        trackMenu.setModel(list);
+        trackMenu.selRole('name');
+        pointMenu.setModel(list);
+        pointMenu.setRole('name');
+//        plotWidgetSelector.combobox.editText = "";
+//        trackWidgetSelector.combobox.editText = "";;
+//        pointWidgetSelector.combobox.editText = "";
     }
 
     Connections {
         target: parser;
         onFileOpen: {
-            plotXAxisSelector.combobox.model = parser.getSeriesList();
-            plotYAxisSelector.combobox.model = parser.getSeriesList();
-            pointNameSelector.combobox.model = parser.getPointsList();
+            plotMenu.setXSelectorModel(parser.getSeriesList());
+            plotMenu.setYSelectorModel(parser.getSeriesList());
+            pointMenu.setNamesModel(parser.getPointsList());
         }
     }
     Pane {
@@ -49,7 +48,7 @@ Item {
                 text: model.text
                 width: parent.width
                 highlighted: ListView.isCurrentItem
-                onClicked: trackColorSelector.combobox.currentIndex = index;
+                onClicked: widgetSelector.combobox.currentIndex = index;
             }
             combobox.onAccepted: {
                 if (combobox.find(combobox.editText) === -1)
@@ -62,286 +61,31 @@ Item {
                 widgetSelector.combobox.currentIndex = 0;
             }
         }
-
-
-
-
-        Item {
+        TrackMenuProperties {
             id: trackMenu
             width: parent.width
             height: 200
             anchors.top: widgetSelector.bottom
             visible: ((widgetSelector.combobox.currentIndex === 0) ? true : false)
-
-            ColumnLayout {
-                anchors.fill: parent
-                Selector {
-                    id: trackWidgetSelector
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    label.text: "Select widget:"
-                    combobox.editable: true
-                    combobox.delegate: ItemDelegate {
-                        text: model.name
-                        width: parent.width
-                        visible: model.type === 'empty' || model.type === 'map'
-                        height: ((model.type === 'empty' || model.type === 'map') ? 50 : 0)
-                        onClicked: {
-                            trackWidgetSelector.combobox.currentIndex = model.index;  // switch curent element
-                            if(model.index === 0) {                             // it's <new widget> index0
-                                trackWidgetSelector.combobox.editable = true;   // make it editable
-                                trackWidgetSelector.combobox.editText = '';     // make it empty for user
-                            }
-                            else
-                                trackWidgetSelector.combobox.editable = false;  // in other cases make it uneditable
-                        }
-                    }
-                }
-                Selector {
-                    id: trackColorSelector
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    label.text: qsTr("Color:")
-                    combobox.model: ListModel {}
-                    combobox.delegate: ItemDelegate {
-                        text: model.text
-                        width: parent.width
-                        highlighted: ListView.isCurrentItem
-                        onClicked: trackColorSelector.combobox.currentIndex = index;
-                    }
-                    Component.onCompleted: {
-                        combobox.model.append({text:'black'});
-                        combobox.model.append({text:'red'});
-                        combobox.model.append({text:'blue'});
-                        combobox.model.append({text:'green'});
-                        combobox.model.append({text:'yellow'});
-                        combobox.model.append({text:'cyan'});
-                        combobox.model.append({text:'magenta'});
-                        combobox.currentIndex = 0;
-                    }
-                }
-                Button {
-                    id: addRrackButton
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    text: qsTr("Add")
-                    onClicked: {
-                        if(trackWidgetSelector.combobox.editText == "" &&    // if name is empty
-                           trackWidgetSelector.combobox.currentIndex == 0)   // and current index is index of <new widget>
-                        {
-                            console.debug("wrong name");
-                        }
-                        else {
-                            trackWidgetSelector.combobox.editable = false;        // the following will fix a bug with
-                            var name = trackWidgetSelector.combobox.editText;     // adding empty elements (before adding a
-                            var color = trackColorSelector.combobox.currentText;  // new element, you need to make the combobox
-                            addTrack(name, color);                                // uneditable)
-                            trackWidgetSelector.combobox.editable = true;
-                            trackWidgetSelector.combobox.editText = "";
-                        }
-                    }
-                }
-            }
+            onConfirmed: addTrack(name, color);
         }
-
-
-
-
-
-
-
-
-
-        Item {
+        PlotMenuProperties {
             id: plotMenu
             width: parent.width
             height: 300
             anchors.top: widgetSelector.bottom
             visible: ((widgetSelector.combobox.currentIndex === 1) ? true : false)
-            ColumnLayout {
-                anchors.fill: parent
-                Selector {
-                    id: plotWidgetSelector
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    label.text: qsTr("Select widget:")
-                    combobox.editable: true
-                    combobox.delegate: ItemDelegate {
-                        text: model.name
-                        width: parent.width
-                        visible: model.type === 'empty' || model.type === 'plot'
-                        height: ((model.type === 'empty' || model.type === 'plot') ? 50 : 0)
-                        onClicked: {
-                            plotWidgetSelector.combobox.currentIndex = index;
-                            if(model.index === 0) {
-                                plotWidgetSelector.combobox.editable = true;
-                                plotWidgetSelector.combobox.editText = "";
-                            }
-                            else
-                                plotWidgetSelector.combobox.editable = false;
-                        }
-                    }
-                }
-                Selector {
-                    id: plotXAxisSelector
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    label.text: qsTr("Select x-axis:")
-                }
-                Selector {
-                    id: plotYAxisSelector
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    label.text: qsTr("Select y-axis:")
-                }
-                Button {
-                    id: addPlotButton
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    text: qsTr("Add")
-                    onClicked: {
-                        if(plotWidgetSelector.combobox.editText == "" &&    // if name is empty
-                           plotWidgetSelector.combobox.currentIndex == 0)   // and current index is index of <new widget>
-                        {
-                            console.debug("wrong name");
-                        }
-                        else {
-                            plotWidgetSelector.combobox.editable = false;
-                            var name = plotWidgetSelector.combobox.editText;
-                            var xAxisName = plotXAxisSelector.combobox.currentText;
-                            var yAxixName = plotYAxisSelector.combobox.currentText;
-                            addPlot(name, xAxisName, yAxixName);
-                            plotWidgetSelector.combobox.editable = true;
-                            plotWidgetSelector.combobox.editText = "";
-                        }
-                    }
-                }
-            }
+            onConfirmed: addPlot(name, xname, yname);
         }
-
-
-
-
-
-        Item {
+        PointMenuProperties {
             id: pointMenu
             width: parent.width
             height: 300
             anchors.top: widgetSelector.bottom
             visible: ((widgetSelector.combobox.currentIndex === 2) ? true : false)
-            ColumnLayout {
-                anchors.fill: parent
-                Selector {
-                    id: pointWidgetSelector
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    label.text: qsTr("Select widget:")
-                    combobox.editable: true
-                    combobox.delegate: ItemDelegate {
-                        text: model.name
-                        width: parent.width
-                        visible: model.type === 'empty' || model.type === 'map'
-                        height: ((model.type === 'empty' || model.type === 'map') ? 50 : 0)
-                        onClicked: {
-                            pointWidgetSelector.combobox.currentIndex = index;
-                            if(model.index === 0) {
-                                pointWidgetSelector.combobox.editable = true;
-                                pointWidgetSelector.combobox.editText = "";
-                            }
-                            else
-                                pointWidgetSelector.combobox.editable = false;
-                        }
-                    }
-                }
-                Selector {
-                    id: pointNameSelector
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    label.text: qsTr("Point name:")
-                }
-                Selector {
-                    id: pointRadiusSelector
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    combobox.editable: true
-                    label.text: qsTr("Radius:")
-                    combobox.model: ListModel {}
-                    combobox.delegate: ItemDelegate {
-                        text: model.text
-                        width: parent.width
-                        highlighted: ListView.isCurrentItem
-                        onClicked: pointRadiusSelector.combobox.currentIndex = index;
-                    }
-                    combobox.validator: IntValidator {
-                        top: 5000
-                        bottom: 0
-                    }
-                    Component.onCompleted: {
-                        pointRadiusSelector.combobox.model.append({text:'50'});
-                        pointRadiusSelector.combobox.model.append({text:'100'});
-                        pointRadiusSelector.combobox.model.append({text:'150'});
-                        pointRadiusSelector.combobox.model.append({text:'200'});
-                        pointRadiusSelector.combobox.model.append({text:'250'});
-                        pointRadiusSelector.combobox.model.append({text:'300'});
-                        pointRadiusSelector.combobox.model.append({text:'350'});
-                        pointRadiusSelector.combobox.model.append({text:'400'});
-                        pointRadiusSelector.combobox.currentIndex = 0;
-                    }
-                }
-                Selector {
-                    id: pointColorSelector
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    label.text: qsTr("Color:")
-                    combobox.model: ListModel {}
-                    combobox.delegate: ItemDelegate {
-                        text: model.text
-                        width: parent.width
-                        highlighted: ListView.isCurrentItem
-                        onClicked: pointColorSelector.combobox.currentIndex = index;
-                    }
-                    Component.onCompleted: {
-                        pointColorSelector.combobox.model.append({text:'red'});
-                        pointColorSelector.combobox.model.append({text:'blue'});
-                        pointColorSelector.combobox.model.append({text:'green'});
-                        pointColorSelector.combobox.model.append({text:'yellow'});
-                        pointColorSelector.combobox.model.append({text:'cyan'});
-                        pointColorSelector.combobox.model.append({text:'magenta'});
-                        pointColorSelector.combobox.currentIndex = 0;
-                    }
-                }
-
-                Button {
-                    id: addPointButton
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    text: qsTr("Add")
-                    onClicked: {
-                        if(pointWidgetSelector.combobox.editText == "" &&
-                           pointWidgetSelector.combobox.currentIndex == 0)
-                        {
-                            console.debug("wrong name");
-                        }
-                        else {
-                            pointWidgetSelector.combobox.editable = false;
-                            var name = pointWidgetSelector.combobox.editText;
-                            var point = pointNameSelector.combobox.currentText;
-                            var radius = pointRadiusSelector.combobox.editText;
-                            var opacity = 0.5;
-                            var color = pointColorSelector.combobox.currentText;
-                            addPoint(name, point, radius, opacity, color);
-                            pointWidgetSelector.combobox.editable = true;
-                            pointWidgetSelector.combobox.editText = "";
-                        }
-                    }
-                }
-            }
+            onConfirmed: addPoint(name, point, radius, opacity, color);
         }
     }
-
-
-
-
     RoundButton{
         id: closeButton
         anchors.right: parent.right
@@ -360,3 +104,4 @@ Item {
         }
     }
 }
+

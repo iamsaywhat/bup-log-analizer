@@ -9,5 +9,8 @@
         <file>AddWidgetPage.qml</file>
         <file>Selector.qml</file>
         <file>TrackMenuProperties.qml</file>
+        <file>PlotMenuProperties.qml</file>
+        <file>PointMenuProperties.qml</file>
     </qresource>
+    <qresource prefix="/add-widgets-page"/>
 </RCC>

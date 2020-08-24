@@ -38,16 +38,16 @@ bool BupLogParser::openFile(QString path){
         file.close();
     emit fileOpen(path);
 
-    QList<Series*>::const_iterator i;
-    for(i = series.cbegin(); i != series.cend(); ++i)
-    {
-        if((*i)->name == "course")
-        {
-            for(int j = 0; j < ((*i)->value.size()); j++)
-                qDebug() << (*i)->value.at(j);
-            break;
-        }
-    }
+//    QList<Series*>::const_iterator i;
+//    for(i = series.cbegin(); i != series.cend(); ++i)
+//    {
+//        if((*i)->name == "course")
+//        {
+//            for(int j = 0; j < ((*i)->value.size()); j++)
+//                qDebug() << (*i)->value.at(j);
+//            break;
+//        }
+//    }
 
     return status;
 }
