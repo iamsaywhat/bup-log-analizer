@@ -18,8 +18,9 @@ SOURCES += \
         filesystemmodel.cpp \
         main.cpp
 
-RESOURCES += qml.qrc \
-    icons.qrc
+RESOURCES += \
+    icons.qrc \
+    qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -35,3 +36,26 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     buplogparser.h \
     filesystemmodel.h
+
+DISTFILES += \
+    components/GpsTracker.qml \
+    components/Plot.qml \
+    main.qml \
+    pages/addwidget/AddWidgetPage.qml \
+    pages/addwidget/PlotMenuProperties.qml \
+    pages/addwidget/PointMenuProperties.qml \
+    pages/addwidget/Selector.qml \
+    pages/addwidget/TrackMenuProperties.qml \
+    pages/main/AppHeader.qml \
+    pages/main/WidgetsWorkspace.qml \
+    pages/openfile/OpenFilePage.qml \
+    qml/AppHeader.qml \
+    qml/GpsTracker.qml \
+    qml/OpenFilePage.qml \
+    qml/Plot.qml \
+    qml/WidgetsWorkspace.qml \
+    qml/addpage/AddWidgetPage.qml \
+    qml/addpage/PlotMenuProperties.qml \
+    qml/addpage/PointMenuProperties.qml \
+    qml/addpage/Selector.qml \
+    qml/addpage/TrackMenuProperties.qml

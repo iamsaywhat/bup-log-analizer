@@ -1,16 +1,15 @@
 <RCC>
     <qresource prefix="/">
+        <file>pages/addwidget/AddWidgetPage.qml</file>
+        <file>pages/addwidget/PlotMenuProperties.qml</file>
+        <file>pages/addwidget/PointMenuProperties.qml</file>
+        <file>pages/addwidget/Selector.qml</file>
+        <file>pages/addwidget/TrackMenuProperties.qml</file>
+        <file>pages/main/AppHeader.qml</file>
+        <file>pages/main/WidgetsWorkspace.qml</file>
+        <file>pages/openfile/OpenFilePage.qml</file>
+        <file>components/GpsTracker.qml</file>
+        <file>components/Plot.qml</file>
         <file>main.qml</file>
-        <file>GpsTracker.qml</file>
-        <file>Plot.qml</file>
-        <file>AppHeader.qml</file>
-        <file>WidgetsWorkspace.qml</file>
-        <file>OpenFilePage.qml</file>
-        <file>AddWidgetPage.qml</file>
-        <file>Selector.qml</file>
-        <file>TrackMenuProperties.qml</file>
-        <file>PlotMenuProperties.qml</file>
-        <file>PointMenuProperties.qml</file>
     </qresource>
-    <qresource prefix="/add-widgets-page"/>
 </RCC>

@@ -5,6 +5,12 @@ import QtCharts 2.12
 import QtQml.Models 2.13
 import QtQuick.Layouts 1.13
 
+
+import "pages/main"
+import "pages/addwidget"
+import "pages/openfile"
+import "components/"
+
 ApplicationWindow {
     id: window
     visible: true
