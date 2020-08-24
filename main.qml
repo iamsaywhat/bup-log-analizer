@@ -163,7 +163,7 @@ ApplicationWindow {
             onAddPlot: {
                 var itemIndex = activeWidgetsModel.find(name);
                 if(itemIndex === -1){
-                    var component = Qt.createComponent("Plot.qml");
+                    var component = Qt.createComponent("qrc:/components/Plot.qml");
                     if (component.status === Component.Ready) {
                         var object = component.createObject(widgets);
                         activeWidgetsModel.append({'type': 'plot', 'name': name});
@@ -178,7 +178,7 @@ ApplicationWindow {
             onAddTrack: {
                 var itemIndex = activeWidgetsModel.find(name);
                 if(itemIndex === -1){
-                    var component = Qt.createComponent("GpsTracker.qml");
+                    var component = Qt.createComponent("qrc:/components/GpsTracker.qml");
                     if (component.status === Component.Ready) {
                         var object = component.createObject(widgets);
                         activeWidgetsModel.append({'type': 'map', 'name': name});
@@ -194,7 +194,7 @@ ApplicationWindow {
                 console.debug("onAddPoint");
                 var itemIndex = activeWidgetsModel.find(name);
                 if(itemIndex === -1){
-                    var component = Qt.createComponent("GpsTracker.qml");
+                    var component = Qt.createComponent("qrc:/components/GpsTracker.qml");
                     if (component.status === Component.Ready) {
                         var object = component.createObject(widgets);
                         activeWidgetsModel.append({'type': 'map', 'name': name});
