@@ -18,9 +18,6 @@ Item {
         trackMenu.selRole('name');
         pointMenu.setModel(list);
         pointMenu.setRole('name');
-//        plotWidgetSelector.combobox.editText = "";
-//        trackWidgetSelector.combobox.editText = "";;
-//        pointWidgetSelector.combobox.editText = "";
     }
 
     Connections {
@@ -86,7 +83,7 @@ Item {
             onConfirmed: addPoint(name, point, radius, opacity, color);
         }
     }
-    RoundButton{
+    RoundButton {
         id: closeButton
         anchors.right: parent.right
         anchors.top: parent.top

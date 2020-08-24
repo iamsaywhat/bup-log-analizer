@@ -18,7 +18,7 @@ Item {
             id: widgetSelector
             Layout.fillHeight: true
             Layout.fillWidth: true
-            label.text: "Select widget:"
+            label.text: qsTr("Select widget:")
             combobox.editable: true
             combobox.delegate: ItemDelegate {
                 text: model.name
@@ -68,7 +68,7 @@ Item {
                 if(widgetSelector.combobox.editText == "" &&    // if name is empty
                    widgetSelector.combobox.currentIndex == 0)   // and current index is index of <new widget>
                 {
-                    console.debug("wrong name");
+                    console.debug("name is empty!");
                 }
                 else {
                     widgetSelector.combobox.editable = false;        // the following will fix a bug with

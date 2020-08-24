@@ -63,7 +63,7 @@ Item {
                 if(widgetSelector.combobox.editText == "" &&    // if name is empty
                    widgetSelector.combobox.currentIndex == 0)   // and current index is index of <new widget>
                 {
-                    console.debug("wrong name");
+                    console.debug("name is empty!");
                 }
                 else {
                     widgetSelector.combobox.editable = false;

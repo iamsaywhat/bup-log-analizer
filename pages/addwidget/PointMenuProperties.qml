@@ -105,7 +105,7 @@ Item {
                 if(widgetSelector.combobox.editText == "" &&
                    widgetSelector.combobox.currentIndex == 0)
                 {
-                    console.debug("wrong name");
+                    console.debug("name is empty!");
                 }
                 else {
                     widgetSelector.combobox.editable = false;
